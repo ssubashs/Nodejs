@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Sudoku</title>
+<meta name="description" content="bootstrap grid sizing" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<!-- basic styles -->
+<link href="/assets/css/bootstrap.css"  rel="stylesheet" />
+<link rel="stylesheet" href="/assets/css/font-awesome.css" />
+<!-- fonts -->
+<link rel="stylesheet" href="/assets/css/ace-fonts.css" />
+<!-- ace styles -->
+<link rel="stylesheet" href="/assets/css/ace.css" />
+<link rel="stylesheet" href="/assets/css/ace-rtl.css" />
+<link rel="stylesheet" href="/assets/css/ace-skins.css" />
+<link rel="stylesheet" href="/stylesheets/sudoku.grid.css" />
+</head>
+
+<body>
+<div id="content">			
+		<div class="gridmain">										
+						<div class="center page-header" id="header">
+							<h1>
+								Sudoku 
+							</h1>	
+								<div class="btn-group" id="actions">												
+												<button class="btn btn-success" id="btn-EnterPuzzle" targetDiv="sudocontainer">Create</button>
+												<button class="btn btn-warning" id="btn-reset" targetDiv="sudocontainer">Reset</button>
+												<button class="btn btn-danger" id="btn-save" targetDiv="sudocontainer">Save</button>
+												<button class="btn btn-danger" id="btn-validate" targetDiv="sudocontainer">validate</button>
+													
+								</div>
+								
+							
+							<div id="message"></div>
+						</div><!-- /.page-header -->
+
+						<div  class="sudoGrid" id="sudocontainer">
+						
+
+						</div>
+								
+					
+		</div><!-- /main -->
+</div>	
+
+
+<script src="/assets/js/jquery.js" ></script>
+<script src="/assets/js/bootstrap.js" ></script>
+<script src="/assets/js/typeahead.jquery.js"></script>
+<!-- page specific plugin scripts -->
+<!-- ace scripts -->
+<script src="/assets/js/ace-elements.js" ></script>
+<script src="/assets/js/ace.js"></script>		
+<script src="/assets/js/ace-extra.js"></script>
+<script type="text/javascript">
+var puzzles = <%= puzzles %>;
+console.log(puzzles[0]);
+</script>
+<script src="/js/sudoku.grid.js"></script>
+</body>
+</html>

@@ -1,0 +1,5 @@
+{
+  'appname':'Tryout',
+  'lang':'javascript'
+  'lessons':['file io','timeout']
+}

@@ -1,0 +1,102 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'C:\\Program Files (x86)\\nodejs\\\\node.exe',
+1 verbose cli   'C:\\Program Files (x86)\\nodejs\\node_modules\\npm\\bin\\npm-cli.js',
+1 verbose cli   'install' ]
+2 info using npm@1.4.28
+3 info using node@v0.10.35
+4 verbose node symlink C:\Program Files (x86)\nodejs\\node.exe
+5 verbose readDependencies using package.json deps
+6 verbose install where, deps [ 'C:\\Users\\uswbdnu\\git\\Node\\NodeExpress',
+6 verbose install   [ 'express', 'ejs', 'nimbel' ] ]
+7 info preinstall NodeExpress@0.0.1
+8 verbose readDependencies using package.json deps
+9 verbose already installed skipping express@3.2.6 C:\Users\uswbdnu\git\Node\NodeExpress
+10 verbose already installed skipping ejs@* C:\Users\uswbdnu\git\Node\NodeExpress
+11 verbose cache add [ 'nimbel@*', null ]
+12 verbose cache add name=undefined spec="nimbel@*" args=["nimbel@*",null]
+13 verbose parsed url { protocol: null,
+13 verbose parsed url   slashes: null,
+13 verbose parsed url   auth: null,
+13 verbose parsed url   host: null,
+13 verbose parsed url   port: null,
+13 verbose parsed url   hostname: null,
+13 verbose parsed url   hash: null,
+13 verbose parsed url   search: null,
+13 verbose parsed url   query: null,
+13 verbose parsed url   pathname: 'nimbel@*',
+13 verbose parsed url   path: 'nimbel@*',
+13 verbose parsed url   href: 'nimbel@*' }
+14 verbose cache add name="nimbel" spec="*" args=["nimbel","*"]
+15 verbose parsed url { protocol: null,
+15 verbose parsed url   slashes: null,
+15 verbose parsed url   auth: null,
+15 verbose parsed url   host: null,
+15 verbose parsed url   port: null,
+15 verbose parsed url   hostname: null,
+15 verbose parsed url   hash: null,
+15 verbose parsed url   search: null,
+15 verbose parsed url   query: null,
+15 verbose parsed url   pathname: '*',
+15 verbose parsed url   path: '*',
+15 verbose parsed url   href: '*' }
+16 verbose addNamed [ 'nimbel', '*' ]
+17 verbose addNamed [ null, '*' ]
+18 silly lockFile 38b8455e-nimbel nimbel@*
+19 verbose lock nimbel@* C:\Users\uswbdnu\AppData\Roaming\npm-cache\38b8455e-nimbel.lock
+20 silly addNameRange { name: 'nimbel', range: '*', hasData: false }
+21 verbose request where is /nimbel
+22 verbose request registry https://registry.npmjs.org/
+23 verbose request id 45968306b08c168f
+24 verbose url raw /nimbel
+25 verbose url resolving [ 'https://registry.npmjs.org/', './nimbel' ]
+26 verbose url resolved https://registry.npmjs.org/nimbel
+27 verbose request where is https://registry.npmjs.org/nimbel
+28 info trying registry request attempt 1 at 17:30:20
+29 http GET https://registry.npmjs.org/nimbel
+30 http 404 https://registry.npmjs.org/nimbel
+31 verbose headers { date: 'Tue, 10 Feb 2015 01:29:40 GMT',
+31 verbose headers   server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
+31 verbose headers   'content-type': 'application/json',
+31 verbose headers   'cache-control': 'max-age=0',
+31 verbose headers   'content-length': '52',
+31 verbose headers   'accept-ranges': 'bytes',
+31 verbose headers   via: '1.1 varnish',
+31 verbose headers   age: '0',
+31 verbose headers   'x-served-by': 'cache-ord1732-ORD',
+31 verbose headers   'x-cache': 'MISS',
+31 verbose headers   'x-cache-hits': '0',
+31 verbose headers   'x-timer': 'S1423531780.766111,VS0,VE67',
+31 verbose headers   'keep-alive': 'timeout=10, max=50',
+31 verbose headers   connection: 'Keep-Alive' }
+32 silly registry.get cb [ 404,
+32 silly registry.get   { date: 'Tue, 10 Feb 2015 01:29:40 GMT',
+32 silly registry.get     server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
+32 silly registry.get     'content-type': 'application/json',
+32 silly registry.get     'cache-control': 'max-age=0',
+32 silly registry.get     'content-length': '52',
+32 silly registry.get     'accept-ranges': 'bytes',
+32 silly registry.get     via: '1.1 varnish',
+32 silly registry.get     age: '0',
+32 silly registry.get     'x-served-by': 'cache-ord1732-ORD',
+32 silly registry.get     'x-cache': 'MISS',
+32 silly registry.get     'x-cache-hits': '0',
+32 silly registry.get     'x-timer': 'S1423531780.766111,VS0,VE67',
+32 silly registry.get     'keep-alive': 'timeout=10, max=50',
+32 silly registry.get     connection: 'Keep-Alive' } ]
+33 silly lockFile 38b8455e-nimbel nimbel@*
+34 silly lockFile 38b8455e-nimbel nimbel@*
+35 error 404 404 Not Found: nimbel
+35 error 404
+35 error 404 'nimbel' is not in the npm registry.
+35 error 404 You should bug the author to publish it
+35 error 404 It was specified as a dependency of 'NodeExpress'
+35 error 404
+35 error 404 Note that you can also install from a
+35 error 404 tarball, folder, or http url, or git url.
+36 error System Windows_NT 6.1.7601
+37 error command "C:\\Program Files (x86)\\nodejs\\\\node.exe" "C:\\Program Files (x86)\\nodejs\\node_modules\\npm\\bin\\npm-cli.js" "install"
+38 error cwd C:\Users\uswbdnu\git\Node\NodeExpress
+39 error node -v v0.10.35
+40 error npm -v 1.4.28
+41 error code E404
+42 verbose exit [ 1, true ]

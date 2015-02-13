@@ -1,5 +1,4 @@
 {
-  'appname':'Tryout',
-  'lang':'javascript'
-  'lessons':['file io','timeout']
+  "host":"127.0.0.1",
+  "port":"3001"  
 }

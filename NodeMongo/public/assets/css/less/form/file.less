@@ -36,13 +36,8 @@
   //margin-bottom: 9px;
 
   input[type=file] {
-	position: absolute;
-	z-index: -999;
-	
-	width: 1px;
-	height: 1px;
-	overflow: hidden;
-
+	position: fixed;
+	z-index: -2;
 	.opacity(0);
 	&:focus {
 		outline: none;
@@ -167,7 +162,7 @@
 	 height: 17px;
 	 line-height: 15px;
 	 
-	 font-size: @font-size-file-input-reset;
+	 font-size: 11px;
 	 font-weight: normal;
 
 	 background-color: @file-remove-bg;

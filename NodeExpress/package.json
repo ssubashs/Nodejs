@@ -6,8 +6,11 @@
     "start": "node app.js"
   },
   "dependencies": {
-    "express": "3.2.6",
     "ejs": "*",
-    "nimble":"*"
+    "express": "3.2.6",
+    "mongodb": "*",
+    "monk": "*",
+    "nimble": "*",
+    "socket.io": "^0.9.16"
   }
 }

@@ -12,7 +12,7 @@ var express = require('express')
   , ejs = require('ejs')
   ,mongodb = require("mongodb");
  var monk = require('monk');
- var db = monk('localhost:27017/temp');
+ var db = monk('localhost:27017/test');
 
  var flash = require('connect-flash')
   , express = require('express')
@@ -20,31 +20,7 @@ var express = require('express')
   , util = require('util')
   , LocalStrategy = require('passport-local').Strategy;
 
-// configure auth starts
-var users = [
-    { id: 1, username: 'ssubashs', password: 'qwer', email: 'ssubashs@example.com' }
-  , { id: 2, username: 'arkalpa', password: '0987', email: 'arkalpa@example.com' }
-];
-
-function findById(id, fn) {
-  var idx = id - 1;
-  if (users[idx]) {
-    fn(null, users[idx]);
-  } else {
-    fn(new Error('User ' + id + ' does not exist'));
-  }
-}
-
-function findByUsername(username, fn) {
-  for (var i = 0, len = users.length; i < len; i++) {
-    var user = users[i];
-    if (user.username === username) {
-      return fn(null, user);
-    }
-  }
-  return fn(null, null);
-}
-
+var userdb = require('./model/User');
 
 // Passport session setup.
 //   To support persistent login sessions, Passport needs to be able to
@@ -52,11 +28,11 @@ function findByUsername(username, fn) {
 //   this will be as simple as storing the user ID when serializing, and finding
 //   the user by ID when deserializing.
 passport.serializeUser(function(user, done) {
-  done(null, user.id);
+  done(null, user._id);
 });
 
 passport.deserializeUser(function(id, done) {
-  findById(id, function (err, user) {
+	userdb.findById(id, function (err, user) {
     done(err, user);
   });
 });
@@ -76,12 +52,14 @@ passport.use(new LocalStrategy(
       // username, or the password is not correct, set the user to `false` to
       // indicate failure and set a flash message.  Otherwise, return the
       // authenticated `user`.
-      findByUsername(username, function(err, user) {
+    	userdb.findByUsername(username, function(err, user) {
         if (err) { return done(err); }
         if (!user) { return done(null, false, { message: 'Unknown user ' + username }); }
-        if (user.password != password) { return done(null, false, { message: 'Invalid password' }); }
+        console.log('db password :: '+user.password );
+        console.log('form password :: '+password);
+        if (user.password !== password) { return done(null, false, { message: 'Invalid password' }); }
         return done(null, user);
-      })
+      });
     });
   }
 ));
@@ -136,7 +114,7 @@ app.get('/game/:name', function(req,res){
 });
 
 app.get('/db/userlist', ensureAuthenticated, function(req,res){ 
-   user.userlist(req,res);
+   user.userdetail(req,res);
 });
 
 app.get('/puzzle/sudoku', function(req,res){ 

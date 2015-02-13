@@ -10,10 +10,20 @@ exports.list = function(req, res){
 
 exports.userlist = function(req, res){
   	var db = req.db;
-   // console.log(db);
-    var collection = db.get('user');
+  	var user = req.user;
+    console.log(" userlist request for " + user.username);
+    var collection = db.get('usercollection');
     collection.find({},{},function(e,docs){
         res.send(docs);
     });
+
+};
+
+exports.userdetail = function(req, res){
+  	var db = req.db;
+  	var user = req.user;
+    console.log(" userlist request for " + user.username);  
+    res.send(user);
+  
 
 };

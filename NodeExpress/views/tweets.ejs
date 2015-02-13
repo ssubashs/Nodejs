@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link rel='stylesheet' href='/stylesheets/bootstrap.min.css' />
+    
+  </head>
+  <body>
+    <h1>Welcome <%= user %></h1>
+    <p><%= heading %></p>
+    <ul class="list-group">
+	    <% tweets.forEach(function(tweet){ %>
+	      <li class="list-group-item"><strong><%= tweet.tweetname %> : </strong>  <%= tweet.text %></li>
+	    <% }) %>
+	 </ul>	
+    
+  </body>
+</html>

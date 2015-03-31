@@ -1,0 +1,374 @@
+
+<!-- ajax layout which only needs content area -->
+<div class="row">
+	<div class="col-xs-12">
+		<!-- PAGE CONTENT BEGINS -->
+<div class="row">
+			<div class="col-sm-10 col-sm-offset-1">
+				<!-- #section:pages/invoice -->
+				<div class="widget-box transparent">
+					<div class="widget-header widget-header-large">
+						<h3 class="widget-title grey lighter">
+							<i class="ace-icon fa fa-leaf green"></i>
+							Subash Soundrapandi
+						</h3>
+
+						<!-- #section:pages/invoice.info -->
+						<div class="widget-toolbar no-border invoice-info">
+							<span class="invoice-info-label">username:</span>
+							<span class="red">@ssubashs</span>
+
+							<br />
+							<span class="invoice-info-label">Joined:</span>
+							<span class="blue">04/04/2014</span>
+						</div>
+
+						<div class="widget-toolbar hidden-480">
+							<a href="#">
+								<i class="ace-icon fa"></i>
+							</a>
+						</div>
+
+						<!-- /section:pages/invoice.info -->
+					</div>
+
+					<div class="widget-body">
+						<div class="widget-main padding-24">
+							<div class="row" id="accountsetting">
+								
+								
+											<div class="row">
+											<div class="col-xs-12 col-sm-3 center">
+												<span id="avatarmessage">
+													Click to change profile pic
+												</span>
+												<span class="profile-picture" ng-show="personal.avatarid">
+													<img data-pk="13" ng-src="../api/image/{{personal.avatarid}}" class="editable img-responsive" id="avatar" />
+												</span>
+											</div>	
+											<div class="editable-input editable-image" ng-hide="personal.avatarid">
+													
+												<span id="noavatar">
+													<label class="ace-file-input ace-file-multiple" style="width: 150px;">
+													<span class="ace-file-container" data-title="Change Avatar" >
+														<span class="ace-file-name" data-title="No File ...">													
+															<i class=" ace-icon fa fa-picture-o"></i>													
+														</span>
+													</span>													
+													</label>
+												</span>
+											</div>
+											<!--
+											<form class="form-horizontal" id="avatarform" ng-controller="settingscontroller" ng-submit="upload()" >												
+												
+												<div class="col-xs-12 col-sm-4">
+													<input type="file" />
+												</div>
+												<div class="col-xs-12 col-sm-8">														
+														<div class="col-md-offset-3 col-md-9">
+															<button class="btn btn-info" type="button">
+																<i class="ace-icon fa fa-check bigger-110"></i>
+																upload
+															</button>
+														</div>
+													
+												</div>
+												
+											</form>	
+											-->
+											</div>
+											<div class="vspace-12-sm"></div>
+											<div class="hr hr-24"></div>
+											<div class="row">
+											<form class="form-horizontal" ng-controller="settingscontroller" ng-submit="saveUser()" >												
+														<input type="hidden" name="avatarid" id="avatarid" ng-model="personal.avatarid" ng-update-hidden/>
+														<div class="form-group">
+														
+															<label class="col-sm-3 control-label no-padding-right" for="form-firstname"> First name </label>
+											
+															<div class="col-sm-9">
+																<input type="text" id="form-firstname" placeholder="First name" class="col-xs-10 col-sm-5" ng-model="personal.firstname" />
+															</div>
+														</div>
+														<div class="form-group">
+														
+															<label class="col-sm-3 control-label no-padding-right" for="form-lastname"> Last name </label>
+											
+															<div class="col-sm-9">
+																<input type="text" id="form-lastname" placeholder="Last name" class="col-xs-10 col-sm-5" ng-model="personal.lastname"  />
+															</div>
+														</div>												
+											
+													<div class="form-group">
+															<label class="col-sm-3 control-label no-padding-right" for="form-field-date">Birth Date</label>
+
+															<div class="col-sm-9">
+																<div class="input-medium">
+																	<div class="input-group">
+																		<input class="input-medium date-picker" id="form-field-date" type="text" data-date-format="dd-mm-yyyy" placeholder="dd-mm-yyyy" ng-model="personal.dateofbirth" />
+																		<span class="input-group-addon">
+																			<i class="ace-icon fa fa-calendar"></i>
+																		</span>
+																	</div>
+																</div>
+															</div>
+													</div>
+
+													<div class="space-4"></div>
+
+													<div class="form-group">
+														<label class="col-sm-3 control-label no-padding-right">Gender</label>
+
+														<div class="col-sm-9">
+														<label class="inline" ng-repeat="gender in genders.choices">
+																<input name="form-field-gender" type="radio" class="ace" ng-model="personal.gender" ng-value="gender.text" />
+																<span class="lbl middle"> {{gender.text}}</span>
+														</label>
+														<!--
+															<label class="inline">
+																<input name="form-field-gender" type="radio" class="ace" ng-model="personal.gender" ng-value="true" />
+																<span class="lbl middle"> Male</span>
+															</label>
+
+															&nbsp; &nbsp; &nbsp;
+															<label class="inline">
+																<input name="form-field-gender" type="radio" class="ace"  ng-model="personal.gender" ng-value="true" />
+																<span class="lbl middle"> Female</span>
+															</label>
+														-->	
+														</div>
+													</div>
+
+													<div class="space-4"></div>
+
+													<div class="form-group">
+														<label class="col-sm-3 control-label no-padding-right" for="form-field-description">About me:</label>
+
+														<div class="col-sm-9">
+															<textarea  class="form-control limited"  id="form-field-description" maxlength="500" ng-model="personal.aboutme"></textarea>
+														</div>
+													</div>
+
+													<div class="space"></div>
+													<h4 class="header blue bolder smaller">Contact</h4>
+
+													<div class="form-group">
+														<label class="col-sm-3 control-label no-padding-right" for="form-field-email">Email</label>
+
+														<div class="col-sm-9">
+															<span class="input-icon input-icon-right">
+																<input type="email" id="form-field-email" value="" ng-model="contact.email"  />
+																<i class="ace-icon fa fa-envelope"></i>
+																
+															</span>
+														</div>
+													</div>
+
+													<div class="space-4"></div>
+
+													<div class="form-group">
+														<label class="col-sm-3 control-label no-padding-right" for="form-field-website">Website</label>
+
+														<div class="col-sm-9">
+															<span class="input-icon input-icon-right">
+																<input type="url" id="form-field-website" value="" ng-model="contact.website"  />
+																<i class="ace-icon fa fa-globe"></i>
+															</span>
+														</div>
+													</div>
+
+													<div class="space-4"></div>
+
+													<div class="form-group">
+														<label class="col-sm-3 control-label no-padding-right" for="form-field-phone">Phone</label>
+
+														<div class="col-sm-9">
+															<span class="input-icon input-icon-right">
+																<input class="input-medium input-mask-phone" type="text" id="form-field-phone" ng-model="contact.phone"  />
+																<i class="ace-icon fa fa-phone fa-flip-horizontal"></i>
+															</span>
+														</div>
+													</div>
+			
+													<div class="clearfix form-actions">
+														<div class="col-md-offset-3 col-md-9">
+															<button class="btn btn-info" type="submit">
+																<i class="ace-icon fa fa-check bigger-110"></i>
+																Save
+															</button>
+							
+															&nbsp; &nbsp;
+															<button class="btn" type="reset">
+																<i class="ace-icon fa fa-undo bigger-110"></i>
+																Reset
+															</button>
+														</div>
+													</div>
+											</form>
+											</div>
+								
+							</div> <!--account setting -->
+						</div>
+					</div> <!--  widget body ends -->
+				</div><!-- widget-box transparent -->
+			</div> <!--col-10 -->
+		</div> <!-- row -->				
+
+		<!-- PAGE CONTENT ENDS -->
+	</div><!-- /.col -->
+</div><!-- /.row -->
+
+<!-- page specific plugin scripts -->
+<script type="text/javascript">
+var scripts = [null,"../assets/js/jquery-ui.custom.min.js","../assets/js/x-editable/bootstrap-editable.min.js","../assets/js/jquery.ui.touch-punch.min.js","../assets/js/jquery.gritter.min.js","../assets/js/bootbox.min.js","../assets/js/jquery.easypiechart.min.js","../assets/js/date-time/bootstrap-datepicker.min.js","../assets/js/jquery.hotkeys.min.js","../assets/js/bootstrap-wysiwyg.min.js","../assets/js/select2.min.js","../assets/js/fuelux/fuelux.spinner.min.js","../assets/js/x-editable/bootstrap-editable.min.js","../assets/js/x-editable/ace-editable.min.js","../assets/js/jquery.maskedinput.min.js", "../assets/js/jquery.inputlimiter.1.3.1.min.js",null];
+	ace.load_ajax_scripts(scripts, function() {
+		 //inline scripts related to this page
+		   jQuery(function($) {
+			//editables on first profile page
+			$.fn.editable.defaults.mode = 'inline';
+			$.fn.editableform.loading = "<div class='editableform-loading'><i class='ace-icon fa fa-spinner fa-spin fa-2x light-blue'></i></div>";
+		    $.fn.editableform.buttons = '<button type="submit" class="btn btn-info editable-submit"><i class="ace-icon fa fa-check"></i></button>'+
+		                                '<button type="button" class="btn editable-cancel"><i class="ace-icon fa fa-times"></i></button>';    
+			
+			//editables 
+	  
+	   
+	   $('#accountsetting')
+		.find('input[type=file]').ace_file_input({
+			style:'well',
+			btn_choose:'Change avatar',
+			btn_change:null,
+			no_icon:'ace-icon fa fa-picture-o',
+			thumbnail:'large',
+			droppable:true,
+			
+			allowExt: ['jpg', 'jpeg', 'png', 'gif'],
+			allowMime: ['image/jpg', 'image/jpeg', 'image/png', 'image/gif']
+		})
+		.end().find('button[type=reset]').on(ace.click_event, function(){
+			$('#accountsetting input[type=file]').ace_file_input('reset_input');
+		})
+		.end().find('.date-picker').datepicker().next().on(ace.click_event, function(){
+			$(this).prev().focus();
+		});
+			
+	   $('.input-mask-phone').mask('(999) 999-9999');
+	   
+	   $('textarea.limited').inputlimiter({
+			remText: '%n character%s remaining...',
+			limitText: 'max allowed : %n.'
+		});
+		
+		$(document).on('click', '#avatar, #noavatar',function(){
+					var modal = 
+					'<div class="modal fade">\
+					  <div class="modal-dialog">\
+					   <div class="modal-content">\
+						<div class="modal-header">\
+							<button type="button" class="close" data-dismiss="modal">&times;</button>\
+							<h4 class="blue">Change Avatar</h4>\
+						</div>\
+						\
+						<form class="no-margin">\
+						 <div class="modal-body">\
+							<div class="space-4"></div>\
+							<div style="width:75%;margin-left:12%;"><input type="file" name="image" /></div>\
+						 </div>\
+						\
+						 <div class="modal-footer center">\
+							<button type="submit" class="btn btn-sm btn-success"><i class="ace-icon fa fa-check"></i> Submit</button>\
+							<button type="button" class="btn btn-sm" data-dismiss="modal"><i class="ace-icon fa fa-times"></i> Cancel</button>\
+						 </div>\
+						</form>\
+					  </div>\
+					 </div>\
+					</div>';
+					
+					
+					var modal = $(modal);
+					modal.modal("show").on("hidden", function(){
+						modal.remove();
+					});
+			
+					var working = false;
+			
+					var form = modal.find('form:eq(0)');
+					var file = form.find('input[type=file]').eq(0);
+					file.ace_file_input({
+						style:'well',
+						btn_choose:'Click to choose new avatar',
+						btn_change:null,
+						no_icon:'ace-icon fa fa-picture-o',
+						thumbnail:'small',
+						before_remove: function() {
+							//don't remove/reset files while being uploaded
+							return !working;
+						},
+						allowExt: ['jpg', 'jpeg', 'png', 'gif'],
+						allowMime: ['image/jpg', 'image/jpeg', 'image/png', 'image/gif']
+					});
+			
+					form.on('submit', function(){
+						if(!file.data('ace_input_files')) return false;
+						
+						var submit_url = '../api/image/upload/'+userid;//please modify submit_url accordingly
+						var deferred = null;
+						
+						file.ace_file_input('disable');
+						form.find('button').attr('disabled', 'disabled');
+						form.find('.modal-body').append("<div class='center'><i class='ace-icon fa fa-spinner fa-spin bigger-150 orange'></i></div>");
+						
+						var formData_object = new FormData();//create empty FormData object
+						console.log(file);
+						
+						var files = file.data('ace_input_files');
+						console.log(files);
+								if(files && files.length > 0) {
+									formData_object.append('image', files[0]);
+								}
+						console.log(formData_object);	
+						//var deferred = new $.Deferred;
+						deferred = $.ajax({
+										url: submit_url,
+									    type: 'POST',																  
+									    data: formData_object,
+									    cache: false,
+										dataType: 'json',//server response type
+										contentType: false,
+										processData: false
+							})
+						working = true;
+						deferred.done(function(result) {
+							form.find('button').removeAttr('disabled');
+							form.find('input[type=file]').ace_file_input('enable');
+							form.find('.modal-body > :last-child').remove();
+							
+							modal.modal("hide");
+			
+							//var thumb = file.next().find('img').data('thumb');
+							//if(thumb) 
+							//$('#avatar').get(0).src = '../api/image/'+imageid;
+			
+							working = false;
+							// set angular modal. 
+							var imageid = result.imageid;
+							$('#avatar').get(0).src = '../api/image/'+imageid;
+							var avatarhidden = $("#avatarid");
+							avatarhidden.val(imageid);
+							avatarhidden.trigger('change');
+							//var scope = angular.element($("avatarid")).scope();
+							//scope.$apply(function(){
+							//	scope.personal.avatarid = imageid;
+							//});
+							$("#noavatar").addClass("hidden");
+							$(".profile-picture").removeClass("ng-hide");
+							$("#avatarmessage").html("New avatar uploaded.Save to complete");
+						});
+						return false;
+					});
+							
+				});
+			
+		});	
+	});
+</script>

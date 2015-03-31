@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<% include ../../views/partials/adminhead %>
+	</head>
+
+	<body class="no-skin" ng-app="adminApp">
+		<% include ../../views/partials/adminnav %>
+		<!-- /section:basics/navbar.layout -->
+		<div class="main-container" id="main-container">
+			<script type="text/javascript">
+				try{ace.settings.check('main-container' , 'fixed')}catch(e){}
+			</script>
+			<% include ../../views/partials/adminmenu %>
+						
+			<div class="main-content">
+				<!-- #section:basics/content.breadcrumbs -->
+				<div class="breadcrumbs breadcrumbs-fixed" id="breadcrumbs">					
+					<ul class="breadcrumb">
+						<li>
+							<i class="ace-icon fa fa-home home-icon"></i>
+							<a href="#">Home</a>
+						</li>
+					</ul><!-- /.breadcrumb -->					
+				</div>
+
+				<!-- /section:basics/content.breadcrumbs -->
+				<div class="page-content">				
+					<div class="page-content-area" ng-view>
+						<!-- ajax content goes here -->
+					</div><!-- /.page-content-area -->
+				</div><!-- /.page-content -->
+			</div><!-- /.main-content -->
+
+			<% include ../../views/partials/adminfooter %>			
+			
+			<a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
+				<i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
+			</a>
+		</div><!-- /.main-container -->
+
+	
+	<% include ../../views/partials/adminscripts %>		
+	<script type="text/javascript">
+	var userid = '<%=id%>';
+	var adminApp =  angular.module('adminApp',['ngRoute','angularModalService']);
+
+	 adminApp.config(['$routeProvider',
+                     function($routeProvider) {
+                       $routeProvider.
+                         when('/info/overview', {
+                           templateUrl:function(urlattr){ return "/admin/"+userid+"/overview";},
+                           controller: 'overveiwcontroller'
+                         }).
+						 when('/info/code', {
+                           templateUrl:function(urlattr){ return "/admin/"+userid+"/coderef";},
+                           controller: 'coderefcontroller'
+                         }).
+                         when('/setting/social', {
+                           templateUrl: function(urlattr){ return "/admin/"+userid+"/social";},
+                           controller: 'socialcontroller'
+                         }).
+						 when('/setting/personal', {
+                           templateUrl: function(urlattr){ return "/admin/"+userid+"/personal";},
+                           controller: 'settingscontroller'
+                         }).
+                         when('/action/:name', {
+                             templateUrl: function(urlattr){ return urlattr.name;},
+                             controller: 'actioncontroller'
+                           }).
+                         otherwise({
+                           redirectTo: '/info/overview'
+                         });
+                     }]);
+ 
+	adminApp.factory('notesFactory',function(){
+			var factory={};
+			var notes=[{'title':'Custom directives','tags':['javascripts','angularjs'],'description':'Directives which will bind hidden parameter to a angular model','url':'https://github/repos/ssubashs/test'},
+			 {'title':'Spring data rest','tags':['springdata','rest','java'],'description':'Spring data rest','url':'https://github/repos/ssubashs/test'}];
+			factory.getNotes = function(){
+				return notes;
+			};
+			return factory;
+		});	
+	
+	
+	adminApp.controller('navcontroller',['$scope', '$http', '$location',function($scope,$http,$location){
+			/*
+ 			$scope.personal = {				"firstname" : "Subash1",
+											"lastname" : "Soundrapandi",
+											"username" : "ssubashs",
+											"twitter" : "sstweets",
+											"avatarid" : "4242342423423"
+							  };
+			if($scope.personal.avatarid)				  
+			$scope.avataruri = 	"../avatar/"+$scope.personal.avatarid;			  
+			*/
+			 $scope.loadNav = function () {
+					if($scope.personal)
+					{
+					}
+					else
+					{
+						 $http.get('/api/user/'+userid+'/personal').success(function(data) {
+							console.log('nav data ');
+							console.log(data);
+							$scope.personal = data.personal;
+						 });
+					}
+			};
+			$scope.loadNav();
+ 		}]);
+	
+	adminApp.controller('menucontroller',function($scope){
+		console.log('intialize menucontroller :: Adminmenu');
+		$scope.menuitems = [{'ulclass':'nav nav-list','listitems':
+								 [{'li':{'class':'','href':'#/info/overview','iconclass':'menu-icon fa fa-desktop','label':'Oviewview','description':'Profile overview'}},
+								  {'li':{'class':'','href':'#/setting/personal','aclass':'dropdown-toggle','iconclass':'menu-icon fa fa-cog','label':'Edit Account','description':'Edit account'},
+								   'submenu':{'ulclass':'submenu','listitems':
+												[{'class':'','href':'#/setting/account','iconclass':'menu-icon fa fa-caret-right','label':'Account details','description':''},
+												 {'class':'','href':'#/setting/personal','iconclass':'menu-icon fa fa-caret-right','label':'Personal details','description':''},
+												 {'class':'','href':'#/setting/social','iconclass':'menu-icon fa fa-caret-right','label':'Social settings','description':''}
+												 ]
+											}
+								   },
+								   {'li':{'class':'','href':'#/info/code','iconclass':'menu-icon fa fa-edit','label':'Code Ref','description':'Code Reference'}}, 
+								  ]
+							}];
+		
+		
+		
+		});
+		
+		adminApp.controller('overveiwcontroller',['$scope', '$http', '$location',function($scope,$http,$location){
+			console.log('overview controller invoked');
+			
+		}]);
+		
+		adminApp.controller('coderefcontroller',['$scope', '$http', '$location','notesFactory',function($scope,$http,$location,notesFactory){
+			console.log('coderef controller invoked');
+			console.log(notesFactory);
+			$scope.notes = notesFactory.getNotes();
+			console.log('scope notes');
+			console.log($scope.notes);		
+			  $scope.options = {
+			        aoColumns: [{
+			            "sTitle": "Note Title"
+			        }, {
+			            "sTitle": "Tags"
+			        },{
+			        	"sTitle": "Description"
+			        }],
+			        aoColumnDefs: [{
+			            "bSortable": false,
+			            "aTargets": [0, 1]
+			        }],
+			        bJQueryUI: true,
+			        bDestroy: true,
+			        /*
+			        aaData: [
+			            //["notes1", "somelistoftags","some descriptions for my note"]
+			            $scope.notes
+			        ],
+			        */
+			        bAutoWidth: false,
+					"aoColumns": [
+					  { "bSortable": true },
+					  null,
+					  { "bSortable": false }
+					],
+					"aaSorting": []
+
+			    };	
+
+			$scope.columnDefs = [ 
+	            { "mDataProp": "title", "aTargets":[0]},
+	            { "mDataProp": "tags", "aTargets":[1] },
+	            { "mDataProp": "description", "aTargets":[2] }
+	        ];     
+			$scope.addData = function () {
+				console.log('add data');
+			    };
+
+		
+
+	  
+		}]);
+		
+		adminApp.controller('settingscontroller',['$scope', '$http', '$location',function($scope,$http,$location){
+			console.log('setting controller invoked');
+			$scope.genders = {
+					    choices: [{							
+							text: "Male",
+							choosen: false
+						}, {
+							text: "Female",
+							choosen: false
+						}
+						]
+			}
+			if($scope.personal)
+			{
+			}
+			else
+			{
+				 $http.get('/api/user/'+userid+'/personal').success(function(data) {					
+					$scope.personal = data.personal;
+				 });
+			}
+			if($scope.contact)
+			{
+			}
+			else
+			{
+				 $http.get('/api/user/'+userid+'/contact').success(function(data) {					
+					$scope.contact = data.contact;
+				 });
+			}
+			
+			 $scope.saveUser = function() {
+			 var user = {personal:$scope.personal,contact:$scope.contact};
+			 console.log('--------- user updated ---------- ');
+			 console.log(user);
+			 $http({
+    		  url: '../api/user/'+userid,
+	   		    dataType: "json",
+	   		    method: 'POST',
+	   		 	data:JSON.stringify(user),
+	   		    headers: {
+	   		        "Content-Type": "application/json"
+	   		    },
+	   		   
+    	  
+			   }).success(function(){
+				  console.log('post successful');
+				  $location.path("/info/overview");
+			  });
+
+			};
+			
+		}]);
+		
+		adminApp.controller('infocontroller',function($scope){
+			console.log('action controller invoked');
+		});
+		
+		adminApp.controller('socialmodalcontroller',function($scope,$http,$location,formtype){
+			console.log('modal controller invoked for formtype '+formtype);
+			var modalparaforms = {'forms': [{'type': 'git', 'fields' : {'username':'git username'}},{'type':'twitter','fields':{'username':'Twitter username','appname':'appname registered','secretkey':'*****'}} ]};
+			//var testmodel = {code:{git:{username:''}}};
+			//var socialsetting = { "git" : { } , "twitter" : { }};
+			//$scope.data = testmodel.code.git;
+			for(form in modalparaforms.forms)
+			{
+				if(formtype == modalparaforms.forms[form].type)
+				{
+					$scope.formconfig = modalparaforms.forms[form];	
+					// set this before calling the api: api will reset					
+					var data = {};										
+					console.log(modalparaforms.forms[form].fields); 					
+					for(fieldname in Object.keys(modalparaforms.forms[form].fields))
+					{
+						var fname = Object.keys(modalparaforms.forms[form].fields)[fieldname];
+						data[fname]='';						
+					}
+					$scope.data = data;
+					
+					
+					$http.get('/api/social/'+userid+'/'+formtype).success(function(response) {
+							console.log('response');
+							console.log(response);
+							if(response)
+							{
+								$scope.data = response[formtype];
+								console.log($scope.data);
+							}
+									
+					});		
+					
+				}
+			}
+			
+			$scope.savesocialform = function(){
+				console.log('save :: '+formtype);
+				//console.log($scope.data);
+				var updatedata = {};
+				updatedata[formtype] = $scope.data;
+				console.log(updatedata);
+				$http({
+						  url: '../api/social/'+userid+'/'+formtype,
+							dataType: "json",
+							method: 'POST',
+							data:JSON.stringify(updatedata[formtype]),
+							headers: {
+								"Content-Type": "application/json"
+							},
+						   
+					  
+						   }).success(function(){
+							  console.log('post successful');
+							  $location.path("/setting/social");
+						  });
+			};
+			
+		});
+		
+		adminApp.controller('socialcontroller',['$scope', '$http', '$location','ModalService',function($scope,$http,$location,ModalService){
+			console.log('social controller invoked');
+				$scope.show = function(modalname) {
+				console.log('modal name :: '+modalname);	
+					$scope.formname = 	modalname;	
+							ModalService.showModal({
+								templateUrl: 'socialmodal.html',
+								controller: "socialmodalcontroller",
+								inputs:{formtype:modalname}
+							}).then(function(modal) {
+								modal.element.modal();
+								modal.close.then(function(result) {
+									$scope.message = "You clicked " + result;
+									console.log(result);
+									});
+							});
+				};			
+		}]);
+		
+		adminApp.directive('isActiveNav', [ '$location', function($location) {
+			return {
+			 restrict: 'A',
+			 link: function(scope, element) {
+			   scope.location = $location;
+			   //console.log($location);
+			   //console.log(element);
+			   scope.$watch('location.path()', function(currentPath) {
+			  // console.log('currentpath :: ' +currentPath);
+				 if('#' + currentPath === element[0].attributes['href'].nodeValue) {
+				 console.log(element);
+				 console.log('check needed');
+				   element.parent().addClass('active');
+				   
+				 } else {
+				   element.parent().removeClass('active');
+				 }
+			   });
+			 }
+			 };
+			}]);
+		
+		adminApp.directive('ngUpdateHidden', function($location) {
+			return {
+			 restrict: 'AE',
+			  scope: {},
+			  replace: true,
+			  require: 'ngModel',
+			  link: function($scope, elem, attr, ngModel) {
+				   $scope.$watch(ngModel, function (nv) {
+				   console.log('watch triggerd for hidden element');
+					elem.val(nv);
+					});
+					elem.change(function () { //bind the change event to hidden input						
+						$scope.$apply(function () {
+							ngModel.$setViewValue(elem.val());
+							ngModel.$setTouched(true);
+						});
+					});
+				}
+			 };
+			});	
+
+		adminApp.directive('dynamicModel', ['$compile', function ($compile) {
+		return {
+			'link': function(scope, element, attrs) {
+				scope.$watch(attrs.dynamicModel, function(dynamicModel) {
+					if (attrs.ngModel == dynamicModel || !dynamicModel) return;
+
+					element.attr('ng-model', dynamicModel);
+					if (dynamicModel == '') {
+						element.removeAttr('ng-model');
+					}
+
+					// Unbind all previous event handlers, this is 
+					// necessary to remove previously linked models.
+					element.unbind();
+					$compile(element)(scope);
+				});
+			}
+		};	
+		}]);
+
+	adminApp.directive('notesrefTable', function () {
+    return {
+        restrict: 'E, A, C',
+        link: function (scope, element, attrs, controller) {
+            var dataTable = element.dataTable(scope.options);
+
+            scope.$watch('options.aaData', handleModelUpdates, true);
+
+            function handleModelUpdates(newData) {
+                var data = newData || null;
+                if (data) {
+                    dataTable.fnClearTable();
+                    dataTable.fnAddData(data);
+                }
+            }
+        },
+        scope: {
+            options: "="
+        }
+    };
+});
+		
+		
+	</script>
+	
+	 <script type="text/ng-template" id="socialmodal.html">
+         <div class="modal fade">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" ng-click="close('Cancel')" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">{{formconfig.type}} -- config </h4>
+              </div>
+              <div class="modal-body">
+					   <form class="form-horizontal" role="form" id="">
+						  <div class="form-group" ng-repeat="(fieldname,fieldvalue) in formconfig.fields">
+							<label for="name" class="col-sm-2 control-label">{{fieldname}}</label>
+							<div class="col-sm-10">
+							  <input type="text" class="form-control" id="{{fieldname}}" placeholder="{{fieldvalue}}"  ng-model="data[fieldname]"></value>
+							</div>
+						  </div>						  
+						</form>
+              </div>
+              <div class="modal-footer">
+                <button type="button" ng-click="close('No')" class="btn btn-default" data-dismiss="modal">No</button>
+                <button type="button" ng-click="savesocialform('{{formconfig.type}}')" class="btn btn-primary" data-dismiss="modal">Yes</button>
+              </div>
+            </div>
+          </div>
+        </div>
+     </script>
+	 
+	 <script type="text/ng-template" id="notemodal.html">
+         <div class="modal fade">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" ng-click="close('Cancel')" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Add new note </h4>
+              </div>
+              <div class="modal-body">
+					   <form class="form-horizontal" role="form" id="note">
+						  <h4> add the form elements to add notes </h4>						  
+						</form>
+              </div>
+              <div class="modal-footer">
+                <button type="button" ng-click="close('No')" class="btn btn-default" data-dismiss="modal">No</button>
+                <button type="button" ng-click="savenotes()" class="btn btn-primary" data-dismiss="modal">Yes</button>
+              </div>
+            </div>
+          </div>
+        </div>
+     </script>
+	 
+	 
+	 <script type="text/ng-template" id="iframemodal.html">
+         <div class="modal fade">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" ng-click="close('Cancel')" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">View Note Details </h4>
+              </div>
+              <div class="modal-body">
+					 <iframe src="" style="zoom:0.60" width="99.6%" height="400" frameborder="0"></iframe>
+              </div>
+              <div class="modal-footer">
+                <button type="button" ng-click="close('No')" class="btn btn-default" data-dismiss="modal">No</button>
+                <button type="button" ng-click="savesocialform('{{formconfig.type}}')" class="btn btn-primary" data-dismiss="modal">Yes</button>
+              </div>
+            </div>
+          </div>
+        </div>
+     </script>
+	 
+	 
+		</body>
+</html>

@@ -1,0 +1,91 @@
+/**
+ * New node file
+ */
+
+var https = require('https');
+var mongoconfig = require('../model/mongoconfig');
+
+
+
+function getGitRemoteRepos(username,callback)
+{
+	var options = {
+			host:'api.github.com',
+			path:'/users/'+username+"/repos",
+			method:'GET',
+			headers: {'user-agent': 'Mozilla/5.0'}		
+	};
+
+	var request = https.request(options,function(response,error)
+			{
+				var body = '';
+				if(error){
+						console.log('error .. ' + error);
+						callback(null,error);
+					}
+				response.on("data",function(chunk){
+						body+=chunk.toString('utf8');
+					});
+				response.on("end",function(){
+					var json = JSON.parse(body);
+					var repos = [];
+					console.log(json);
+					console.log("user "+username + " has "+ json.length +" repo");
+					json.forEach(function(repo) {
+						
+						repos.push({
+							name:repo.name,
+							description:repo.description,
+							repourl:repo.html_url,
+							readme:repo.html_url+'/blob/master/README.md',
+							created:repo.created_at,
+							lastupdate:repo.updated_at
+							});
+					});			
+					callback(repos,null);
+				});
+				
+				response.on("error",function(error){
+					console.log('error :: ',error);
+				});
+			});
+
+	request.end();
+
+}
+
+var getRepos = function (id,callback) {
+  var repos = mongoconfig.db.get('repos');
+		repos.findOne({uid:id},function(error,data){
+		 if(error)
+			 {
+			// nodata	 			
+			  return callback(null,null);			
+			 }
+		// success
+		 console.log('retreived data' + data);
+		 return callback(null,data);
+		 //console.log(users);
+	 });
+ }; 
+ 
+var updateRepos = function(id,data,callback)
+{
+	var repos = mongoconfig.db.get('repos');
+		repos.update({uid:id},data,function(error,rows){
+		 if(error)
+			 {
+			// nodata	 
+			 console.log(error);
+			  return callback(error,null);
+			
+			 }
+		// success
+		 console.log('updated userrows ' + rows);
+		 return callback(null,rows);
+		 //console.log(users);
+	 });
+};
+module.exports.getRemoteRepos = getGitRemoteRepos;
+module.exports.getRepos = getRepos;
+module.exports.updateRepos = updateRepos;

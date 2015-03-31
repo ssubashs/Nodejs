@@ -1,0 +1,152 @@
+
+<link rel="stylesheet" href="../assets/css/jquery-ui.custom.min.css" />
+<link rel="stylesheet" href="../assets/css/jquery.gritter.css" />
+<link rel="stylesheet" href="../assets/css/select2.css" />
+<link rel="stylesheet" href="../assets/css/datepicker.css" />
+<link rel="stylesheet" href="../assets/css/bootstrap-editable.css" />
+
+<!-- ajax layout which only needs content area -->
+<div class="row">
+	<div class="col-xs-12">
+		<!-- PAGE CONTENT BEGINS -->
+		
+		<div class="row">
+			<div class="col-sm-10 col-sm-offset-1">
+				<!-- #section:pages/invoice -->
+				<div class="widget-box transparent">
+					<div class="widget-header widget-header-large">
+						<h3 class="widget-title grey lighter">
+							<i class="ace-icon fa fa-leaf green"></i>
+							Subash Soundrapandi
+						</h3>
+
+						<!-- #section:pages/invoice.info -->
+						<div class="widget-toolbar no-border invoice-info">
+							<span class="invoice-info-label">username:</span>
+							<span class="red">@ssubashs</span>
+
+							<br />
+							<span class="invoice-info-label">Joined:</span>
+							<span class="blue">04/04/2014</span>
+						</div>
+
+						<div class="widget-toolbar hidden-480">
+							<a href="#">
+								<i class="ace-icon fa"></i>
+							</a>
+						</div>
+
+						<!-- /section:pages/invoice.info -->
+					</div>
+
+					<div class="widget-body">
+						<div class="widget-main padding-24">
+							<div class="row" id="accountsetting">
+								
+								<form class="form-horizontal">												
+												<div class="row">													
+													<div class="col-xs-12 col-sm-8">
+														<div class="form-group">
+															<label class="col-sm-4 control-label no-padding-right" for="form-field-username">Username</label>
+			
+															<div class="col-sm-6">
+																<input readonly="" class="col-xs-12 col-sm-10" type="text" id="form-field-username" placeholder="Username" value="ssubashs" />
+															</div>
+															
+														</div>
+			
+														<div class="form-group">
+														<label class="col-sm-4 control-label no-padding-right" for="form-field-password">Change password</label>
+															<div class="col-sm-6">
+															<label class="block clearfix">
+																<span class="block input-icon input-icon-right">
+																	<input type="password" class="form-control" placeholder="Password" />
+																	<i class="ace-icon fa fa-lock"></i>
+																</span>
+															</label>
+						
+															<label class="block clearfix">
+																<span class="block input-icon input-icon-right">
+																	<input type="password" class="form-control" placeholder="Repeat password" />
+																	<i class="ace-icon fa fa-retweet"></i>
+																</span>
+															</label>
+															</div>
+														</div>	
+													</div>
+												</div>	
+			
+			
+											<div class="clearfix form-actions">
+												<div class="col-md-offset-3 col-md-9">
+													<button class="btn btn-info" type="button">
+														<i class="ace-icon fa fa-check bigger-110"></i>
+														Save
+													</button>
+					
+													&nbsp; &nbsp;
+													<button class="btn" type="reset">
+														<i class="ace-icon fa fa-undo bigger-110"></i>
+														Reset
+													</button>
+												</div>
+											</div>
+								</form>
+								
+							</div>
+						</div>
+					</div> <!--  widget body ends -->
+				</div><!-- widget-box transparent -->
+			</div> <!--col-10 -->
+		</div> <!-- row -->				
+
+		<!-- PAGE CONTENT ENDS -->
+	</div><!-- /.col -->
+</div><!-- /.row -->
+
+<!-- page specific plugin scripts -->
+<script type="text/javascript">
+var scripts = [null,"../assets/js/jquery-ui.custom.min.js","../assets/js/jquery.ui.touch-punch.min.js","../assets/js/jquery.gritter.min.js","../assets/js/bootbox.min.js","../assets/js/jquery.easypiechart.min.js","../assets/js/date-time/bootstrap-datepicker.min.js","../assets/js/jquery.hotkeys.min.js","../assets/js/bootstrap-wysiwyg.min.js","../assets/js/select2.min.js","../assets/js/fuelux/fuelux.spinner.min.js","../assets/js/x-editable/bootstrap-editable.min.js","../assets/js/x-editable/ace-editable.min.js","../assets/js/jquery.maskedinput.min.js", null]
+	ace.load_ajax_scripts(scripts, function() {
+	  //inline scripts related to this page
+	   jQuery(function($) {
+		//editables on first profile page
+		$.fn.editable.defaults.mode = 'inline';
+		$.fn.editableform.loading = "<div class='editableform-loading'><i class='ace-icon fa fa-spinner fa-spin fa-2x light-blue'></i></div>";
+	    $.fn.editableform.buttons = '<button type="submit" class="btn btn-info editable-submit"><i class="ace-icon fa fa-check"></i></button>'+
+	                                '<button type="button" class="btn editable-cancel"><i class="ace-icon fa fa-times"></i></button>';    
+		
+		//editables 
+		
+		//text editable
+	    $('#username')
+		.editable({
+			type: 'text',
+			name: 'username'
+	    });
+	  
+		});
+	  
+
+	   $('#accountsetting')
+		.find('button[type=reset]').on(ace.click_event, function(){
+			$('#accountsetting input[type=file]').ace_file_input('reset_input');
+		})
+		.end().find('.date-picker').datepicker().next().on(ace.click_event, function(){
+			$(this).prev().focus();
+		})
+		$('.input-mask-phone').mask('(999) 999-9999');
+	   
+	   $("#bootbox-changepwd").on(ace.click_event, function() {
+			bootbox.prompt("Enter password ", function(result) {
+				console.log(result);
+				if (result === null) {
+					
+				} else {
+					
+				}
+			});
+		});
+	  
+	});
+</script>

@@ -1,0 +1,172 @@
+
+<title>Social settings - Swiftapp</title>
+
+<!-- ajax layout which only needs content area -->
+<div class="row">
+	<div class="col-xs-12">
+		<!-- PAGE CONTENT BEGINS -->
+		<div class="row">
+			<div class="col-sm-10 col-sm-offset-1">
+				
+				<div class="widget-box transparent">
+					<div class="widget-header widget-header-large">
+						<h3 class="widget-title grey lighter">
+							<i class="ace-icon fa fa-leaf green"></i>
+							Subash Soundrapandi
+						</h3>
+
+						<!-- #section:pages/invoice.info -->
+						<div class="widget-toolbar no-border invoice-info">
+							<span class="invoice-info-label">username:</span>
+							<span class="red">@ssubashs</span>
+
+							<br />
+							<span class="invoice-info-label">Joined:</span>
+							<span class="blue">04/04/2014</span>
+						</div>
+
+						<div class="widget-toolbar hidden-480">
+							<a href="#">
+								<i class="ace-icon fa"></i>
+							</a>
+						</div>
+
+						
+					</div>
+
+					<div class="widget-body">
+						<div class="widget-main padding-24">
+							<div class="row" id="socialsetting">
+								<div class="col-xs-10 col-sm-12 widget-container-col">
+										
+										<div class="social-login center">
+												<a class="btn btn-primary" ng-click="show('git')">
+													<i class="ace-icon fa fa-github"></i>
+												</a>
+												<!--
+												<a class="btn btn-primary" ng-click="show('twitter')">
+													<i class="ace-icon fa fa-twitter"></i>
+												</a>
+											-->
+										</div>
+
+										<div  class="col-xs-10">
+										<!-- #section:elements.tab -->
+										<div class="tabbable" ng-controller="gitrepocontroller">
+											<ul class="nav nav-tabs" id="myTab">
+												<li class="active">
+													<a data-toggle="tab" data-target="#git">
+														<i class="green ace-icon fa fa-github bigger-120"></i>
+														Git Repos
+														<span class="badge badge-danger">{{count}}</span>
+													</a>
+												</li>
+												
+											</ul>
+
+											<div class="tab-content">
+												<div id="git" class="tab-pane fade in active">
+													<table id="githubtable" class="table table-striped table-bordered table-hover" ng-if="repos">
+														<thead>
+															<tr>														
+																<th>Repo Name</th>
+																<th>Description</th>
+																<th>Created on </th>	
+																<th>Last updated</th>	
+																<th>Readme</th>														
+															</tr>
+														</thead>
+														<tbody>
+																<tr ng-repeat="repo in repos track by $index">
+																		<td>
+																			<a href="{{repo.repourl}}" target="_blank" ng-if="repo.repourl">{{repo.name}}</a>
+																			<p ng-if="!repo.repourl">{{repo.name}} </p>
+																		</td>																		
+																		<td>
+																			
+																				<p class="lighter line-height-125">
+																					{{repo.description}}
+																				</p>
+																			
+																		</td>
+																		<td>
+																			
+																				<p class="lighter line-height-125" ng-bind="repo.created | date:'MM/dd/yyyy'">																					
+																				</p>
+																			
+																		</td>
+																		<td>
+																			
+																				<p class="lighter line-height-125" ng-bind="repo.lastupdate | date:'MM/dd/yyyy'">
+																				
+																				</p>
+																			
+																		</td>	
+																		<td>
+																			<a href="{{repo.readme}}" target="_blank" class="badge badge-grey">
+																				<i class="ace-icon fa fa-external-link"></i>	
+																			</a>
+																		</td>																	
+																</tr>
+														</tbody>		
+													</table>
+													<p ng-if="!repos"> Click the git button to add details 
+														<a ng-click="refresh()" class="btn btn-app btn-xs">
+															<i class="ace-icon glyphicon glyphicon-refresh bigger-160"></i>
+															refresh
+														</a>
+													</p>	
+												</div>												
+											</div>
+										</div>
+
+										<!-- /section:elements.tab -->
+									</div><!-- /.col -->
+										
+								
+								</div>
+							
+							
+							</div>	
+						</div>
+					</div>
+		</div>
+				
+		</div>
+	</div>	
+								
+
+		<!-- PAGE CONTENT ENDS -->
+	</div><!-- /.col -->
+</div><!-- /.row -->
+
+<!-- page specific plugin scripts -->
+<script type="text/javascript">
+  var scripts = [null,"../assets/js/jquery.dataTables.min.js","../assets/js/jquery.dataTables.bootstrap.js", null]
+	ace.load_ajax_scripts(scripts, function() {
+	
+	 jQuery(function($) {
+		/**
+		$('#myTab a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+		  console.log(e.target.getAttribute("href"));
+		})
+			
+		$('#accordion').on('shown.bs.collapse', function (e) {
+			console.log($(e.target).is('#collapseTwo'))
+		});
+		*/
+		
+		$('#myTab a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+			if($(e.target).attr('href') == "#home") drawChartNow();
+		})
+	
+		
+		/**
+			//go to next tab, without user clicking
+			$('#myTab > .active').next().find('> a').trigger('click');
+		*/
+
+	});
+});
+
+</script>

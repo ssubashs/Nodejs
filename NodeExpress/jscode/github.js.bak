@@ -1,0 +1,70 @@
+/**
+ * New node file
+ */
+
+var https = require('https');
+var http = require('http');
+//var agent = new HttpsProxyAgent({
+//    proxyHost: '10.132.40.23',
+//    proxyPort: 80
+//});
+
+function getGitRepos(username,callback)
+{
+//var username = 'ssubashs';
+//var options = {
+//		host:'api.github.com',
+//		path:'/users/'+username+"/repos",
+//		method:'GET',
+//		headers: {'user-agent': 'Mozilla/5.0'}		
+//};
+
+var options = {
+		host:'10.132.40.23',
+		port:80,
+		path:'https://api.github.com/users/'+username+"/repos",
+		method:'GET',
+		headers: {'user-agent': 'Mozilla/5.0'}		
+};
+
+var request = http.request(options,function(response)
+		{
+			var body = '';
+			response.on("data",function(chunk)
+			{
+				body+=chunk.toString('utf8');
+			});
+			response.on("end",function(){
+				var json = JSON.parse(body);
+				var repos = [];
+				console.log("user "+username + " has "+ json.length +" repo");
+				json.forEach(function(repo) {
+					
+					repos.push({
+						name:repo.name,
+						description:repo.description
+						});
+				});
+				
+				//console.log("Git hub repos :: " );
+				//console.log(repos);
+				callback(repos);
+			});
+			
+			response.on("error",function(error){
+				console.log('error :: ',error);
+			});
+		});
+
+request.end();
+
+}
+
+/*
+getGitRepos('ssubashs', function(repos) {
+	console.log('ssubashs has '+repos.length +' repos');
+	console.log(repos);
+});
+*/
+
+module.exports.getRepos = getGitRepos;

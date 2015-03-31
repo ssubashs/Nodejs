@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html ng-app="profileApp">
+<head>
+	<% include ../views/partials/head %>
+</head>
+<body ng-controller="profilecontroller"  id="page-top" data-spy="scroll" data-target=".navbar-fixed-top">
+	 <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    	 <div class="container" id="navcontainer">
+    	 		<!-- navigation view goes here -->
+    	 		 <div class="navbar-header page-scroll">
+		                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+		                    <span class="sr-only">Toggle navigation</span>
+		                    <span class="icon-bar"></span>
+		                    <span class="icon-bar"></span>
+		                    <span class="icon-bar"></span>
+		                </button>
+		                <a class="navbar-brand page-scroll" href="#page-top">Profile</a>
+		            </div>
+		
+		            <!-- Collect the nav links, forms, and other content for toggling -->
+		            <div class="collapse navbar-collapse navbar-ex1-collapse">
+		                <ul class="nav navbar-nav">
+		                    <!-- Hidden li included to remove active class from about link when scrolled up past about section -->		                
+		                    <li ng-repeat="view in views" ng-if="view.sectionid != 'page-top'">
+		              			
+		                        <a class="page-scroll" href="#{{view.sectionid}}">{{view.label}}</a>
+		                    </li>
+		                </ul>
+		            </div>       
+    	 </div>
+    </nav>   
+   <!-- Intro Section -->
+    <section ng-repeat="view in views" id="{{view.sectionid}}" class="section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                   <div  ng-include="view.contenturl"/>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+	<% include ../views/partials/scripts %>
+	
+ 	<script type="text/javascript">
+ 		var profileapp = angular.module('profileApp',[]);
+ 		profileapp.controller('profilecontroller',function($scope){
+ 			$scope.views = [{'sectionid':'page-top','label':'Profile','contenturl':'../profile/<%=userid%>/section/home'},
+ 							{'sectionid':'skills','label':'Skill','contenturl':'../profile/<%=userid%>/section/skill'},
+ 							{'sectionid':'code','label':'GitCode','contenturl':'../profile/<%=userid%>/section/code'},
+ 							{'sectionid':'note','label':'Evernote','contenturl':'../profile/<%=userid%>/section/notes'},
+ 							{'sectionid':'contact','label':'contactMe','contenturl':'../profile/<%=userid%>/section/contact'}
+ 							];
+ 		});
+ 		
+ 		//jQuery to collapse the navbar on scroll
+		$(window).scroll(function() {
+		    if ($(".navbar").offset().top > 50) {
+		        $(".navbar-fixed-top").addClass("top-nav-collapse");
+		    } else {
+		        $(".navbar-fixed-top").removeClass("top-nav-collapse");
+		    }
+		});
+ 		
+ 		//jQuery for page scrolling feature - requires jQuery Easing plugin
+		$(function() {
+		    $('#navcontainer a.page-scroll').bind('click', function(event) {
+		    	
+		        var $anchor = $(this);
+		        console.log('clicked '+$anchor);
+		        $('html, body').stop().animate({
+		            scrollTop: $($anchor.attr('href')).offset().top
+		        }, 1500, 'easeInOutExpo');
+		       //event.preventDefault();
+		    });
+		});
+		
+ 	</script> 
+ 	
+ 	
+</body>
+</html>

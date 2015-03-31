@@ -20,7 +20,7 @@ var express = require('express')
   , util = require('util')
   , LocalStrategy = require('passport-local').Strategy;
 
-// configure auth starts
+// configure auth starts 
 var users = [
     { id: 1, username: 'ssubashs', password: 'qwer', email: 'ssubashs@example.com' }
   , { id: 2, username: 'arkalpa', password: '0987', email: 'arkalpa@example.com' }

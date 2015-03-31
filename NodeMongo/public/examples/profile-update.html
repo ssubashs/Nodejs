@@ -84,7 +84,7 @@
 				var last_gritter
 				$('#avatar').editable({
 					type: 'image',
-					name: 'avatar',
+					name: 'image',
 					value: null,
 					image: {
 						//specify ace file input plugin's options here
@@ -93,7 +93,7 @@
 						maxSize: 110000,//~100Kb
 
 						//and a few extra ones here
-						name: 'avatar',//put the field name here as well, will be used inside the custom plugin
+						name: 'image',//put the field name here as well, will be used inside the custom plugin
 						on_error : function(error_type) {//on_error function will be called when the selected file has a problem
 							if(last_gritter) $.gritter.remove(last_gritter);
 							if(error_type == 1) {//file format error
@@ -118,7 +118,7 @@
 					},
 					url: function(params) {
 						// ***UPDATE AVATAR HERE*** //
-						var submit_url = 'file-upload.php';//please modify submit_url accordingly
+						var submit_url = '../api/image/upload';//please modify submit_url accordingly
 						var deferred = null;
 						var avatar = '#avatar';
 
@@ -209,9 +209,11 @@
 						//deferred callbacks, triggered by both ajax and iframe solution
 						deferred
 						.done(function(result) {//success
-							var res = result[0];//the `result` is formatted by your server side response and is arbitrary
-							if(res.status == 'OK') $(avatar).get(0).src = res.url;
-							else alert(res.message);
+							console.log('response is ::');
+							console.log(result);
+							var resid = result.imageid;//the `result` is formatted by your server side response and is arbitrary
+							if(result.status == 'success') $(avatar).get(0).src = '../api/image/'+resid;
+							else alert('result');
 						})
 						.fail(function(result) {//failure
 							alert("There was an error");

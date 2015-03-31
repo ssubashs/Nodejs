@@ -8,5 +8,9 @@ exports.express = function(req, res){
 };
 
 exports.index = function(req, res){
-  res.render('index.html');
+  res.render('index');
+};
+
+exports.login = function(req, res){
+  res.render('login');
 };

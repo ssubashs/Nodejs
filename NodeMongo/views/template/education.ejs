@@ -157,51 +157,16 @@
 								  <input type="text" class="form-control" name="degree" id="degree"  ng-model="item.degree"></value>
 								</div>
 							</div>	
-
-						<!--
-							<div class="form-group">
-							<label  for="title" class="col-sm-2 control-label">Course duration</label>
-							
-	
-							
-								<div class="col-sm-8">
-									<div class="input-daterange input-group col-sm-10">
-
-										<input type="text" class="form-control" ng-model="fromDate" data-max-date="{{untilDate}}" bs-datepicker name="start" />
-										<span class="input-group-addon">
-											<i class="fa fa-exchange"></i>
-										</span>
-
-										<input type="text" class="form-control" ng-model="untilDate" data-min-date="{{fromDate}}" bs-datepicker name="end" />
-										<span class="input-group-addon">
-											<i class="fa fa-exchange"></i>
-										</span>
-									</div>
-									
-								</div>
-							</div>	
-
-
-							<div class="form-group">
-								    <label class="control-label"><i class="fa fa-calendar"></i> Course Duration</label>
-								    <div class="form-group col-xs-6">
-								      <input type="text" class="form-control" ng-model="item.startdate" data-max-date="{{currentdate}}" placeholder="start" bs-datepicker>
-								    </div>								    
-								    <div class="form-group col-xs-6">
-								      <input type="text" class="form-control" ng-model="item.enddate" placeholder="completed" bs-datepicker>
-								    </div>
-						    </div>
-						-->	
 					
 					
 							<div class="form-group">
 								    <label class="col-sm-2 control-label">Course Duration</label>
 								    <div class="col-sm-10">
-								      <input type="text" class="form-control" ng-model="item.startdate" data-max-date="{{curentdate}}" placeholder="began" bs-datepicker>
+								      <input type="text" class="form-control" ng-model="item.startdate" max-date="{{curentdate}}" placeholder="began" datepicker-popup="dd-MMMM-yyyy">
 										<span class="input-group-addon">
 											<i class="fa fa-exchange"></i>
 										</span>
-								       <input type="text" class="form-control" ng-model="item.enddate" data-max-date="{{currentdate}}" placeholder="graduated" bs-datepicker>
+								       <input type="text" class="form-control" ng-model="item.enddate" max-date="{{currentdate}}" placeholder="graduated" datepicker-popup="dd-MMMM-yyyy">
 								    </div>								    
 								    
 						    </div>
@@ -240,37 +205,5 @@
 
       <script type="text/javascript">
         		console.log('loading scripts');
-					/*
-						var scripts = [null,"../assets/js/jquery.dataTables.min.js","../assets/js/jquery.dataTables.bootstrap.js","../assets/js/date-time/bootstrap-datepicker.min.js","../assets/js/date-time/bootstrap-timepicker.min.js","../assets/js/date-time/moment.min.js","../assets/js/date-time/daterangepicker.min.js","../assets/js/date-time/bootstrap-datetimepicker.min.js", null];
-					*/	
-						var scripts = [null,"../assets/js/jquery-ui.custom.min.js","../assets/js/x-editable/bootstrap-editable.min.js","../assets/js/jquery.ui.touch-punch.min.js","../assets/js/jquery.gritter.min.js","../assets/js/bootbox.min.js","../assets/js/jquery.easypiechart.min.js","../assets/js/date-time/bootstrap-datepicker.min.js","../assets/js/jquery.hotkeys.min.js","../assets/js/bootstrap-wysiwyg.min.js","../assets/js/select2.min.js","../assets/js/fuelux/fuelux.spinner.min.js","../assets/js/x-editable/bootstrap-editable.min.js","../assets/js/x-editable/ace-editable.min.js","../assets/js/jquery.maskedinput.min.js", "../assets/js/jquery.inputlimiter.1.3.1.min.js",null];
-						ace.load_ajax_scripts(scripts, function() {	
-							//to translate the daterange picker, please copy the "examples/daterange-fr.js" contents here before initialization
-							 jQuery(function($) {
-
-								 	// 	$('#educationref')
-										// .find('.date-picker').datepicker().next().on(ace.click_event, function(){
-										// 	$(this).prev().focus();
-										// });
-
-										// $('#educationref').find('input[name=date-range-picker]').daterangepicker({
-										// 	'applyClass' : 'btn-sm btn-success',
-										// 	'cancelClass' : 'btn-sm btn-default',
-										// 	locale: {
-										// 		applyLabel: 'Apply',
-										// 		cancelLabel: 'Cancel',
-										// 	}
-										// })
-										// .prev().on(ace.click_event, function(){
-										// 	$(this).next().focus();
-										// });
-
-									
-										// //or change it into a date range picker
-										// $('#educationref').find('.input-daterange').datepicker({autoclose:true})
-										// 		.prev().on(ace.click_event, function(){
-										// 			$(this).next().focus();
-										// 		});
-								    });	
-							});
+				
 	</script>	

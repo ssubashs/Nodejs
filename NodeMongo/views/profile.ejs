@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app="profileApp">
+<html ng-app="profileapp">
 <head>
 	<% include ../views/partials/head %>
 </head>
@@ -33,11 +33,9 @@
    <!-- Intro Section -->
     <section ng-repeat="view in views" id="{{view.sectionid}}" class="section">
         <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
+           
                    <div  ng-include="view.contenturl"/>
-                </div>
-            </div>
+           
         </div>
     </section>
 
@@ -45,15 +43,50 @@
 	<% include ../views/partials/scripts %>
 	
  	<script type="text/javascript">
- 		var profileapp = angular.module('profileApp',[]);
- 		profileapp.controller('profilecontroller',function($scope){
- 			$scope.views = [{'sectionid':'page-top','label':'Profile','contenturl':'../profile/<%=userid%>/section/home'},
- 							{'sectionid':'skills','label':'Skill','contenturl':'../profile/<%=userid%>/section/skill'},
- 							{'sectionid':'code','label':'GitCode','contenturl':'../profile/<%=userid%>/section/code'},
- 							{'sectionid':'note','label':'Evernote','contenturl':'../profile/<%=userid%>/section/notes'},
- 							{'sectionid':'contact','label':'contactMe','contenturl':'../profile/<%=userid%>/section/contact'}
+ 	var userid = '<%=userid%>';
+ 		var profileapp = angular.module('profileapp',['ui.bootstrap']);
+ 		profileapp.factory('dataFactory',function($http){
+ 		var factory = {}; 		
+
+ 		factory.init = function(){
+ 			if(!factory.personal)
+ 			{	
+	 			console.log('contacting server to get the personal details');
+	 			var promise = $http.get('/api/user/'+userid); 			
+				  	return promise;			 		
+ 			}
+ 			return factory;
+ 		}
+
+ 		return factory;
+ 	});
+
+ 		profileapp.controller('profilecontroller',['$scope', '$http', '$location','dataFactory',function($scope,$http,$location,dataFactory){
+ 			$scope.views = [{'sectionid':'page-top','label':'Home' ,'contenturl':'profile.html'},
+ 							{'sectionid':'skills','label':'Skills','contenturl':'skills.html'},
+ 							{'sectionid':'code','label':'Code','contenturl':'code.html'},
+ 							{'sectionid':'note','label':'Notes','contenturl':'notes.html'},
+ 							{'sectionid':'contact','label':'contact me','contenturl':'../profile/<%=userid%>/section/contact'}
  							];
- 		});
+
+ 			var promise = dataFactory.init();	
+ 			if(promise)	
+					{	
+						promise.then(function(payload){
+	 							console.log('got the details from server');
+								dataFactory.data = payload.data;
+								$scope.data = dataFactory.data;
+							},
+							function(errorPayload)
+							{	
+								console.log('error ' +errorPayload);
+								
+							});
+				    }				
+
+ 		}]);
+ 		
+
  		
  		//jQuery to collapse the navbar on scroll
 		$(window).scroll(function() {
@@ -79,6 +112,169 @@
 		
  	</script> 
  	
+ 	<script type="text/ng-template" id="profile.html">
  	
+			    <div class="row">
+			        <div class="col-sm-6">
+			             <h1 class="">{{data.personal.firstname}} {{data.personal.lastname}}</h1>         
+
+			        </div>
+			      <div class="col-sm-4"></div>  
+			      <div class="col-sm-2"><a><img title="profile image" class="img-circle img-responsive" ng-src="../api/image/{{data.personal.avatarid}}"></a>
+
+			        </div>
+			    </div>
+			  <br>
+			    <div class="row">
+			        <div class="col-sm-3">
+			            <!--left col-->
+			            <ul class="list-group">
+			                <li class="list-group-item text-muted" contenteditable="false">Profile</li>
+			                <li class="list-group-item text-right"><span class="pull-left"><strong class="">Born</strong></span> {{data.personal.dateofbirth | date:'MM/dd/yyyy'}}</li>
+			                <li class="list-group-item text-right"><span class="pull-left"><strong class="">Lives in</strong></span> {{data.contact.city}},{{data.contact.state}}</li>
+			                <li class="list-group-item text-right" ng-if="data.personal.profession"><span class="pull-left"><strong class="">Profession</strong></span>{{data.personal.profession}}</li>
+			              <li class="list-group-item text-right" ng-if="data.experience"><span class="pull-left"><strong class="">working since </strong></span>{{data.experience[0].startdate | date:'MM/dd/yyyy'}} </li>
+			            </ul>
+			          <!--
+			            <ul class="list-group">
+			                <li class="list-group-item text-muted">Experience <i class="fa fa-dashboard fa-1x"></i>
+
+			                </li>
+			                <li class="list-group-item text-left"><span class="pull-left"><strong class="">Senior software engineer in Neobytes</strong></span> 2014-2015</li>
+			                <li class="list-group-item text-right"><span class="pull-left"><strong class="">paypal</strong></span> 2013-2014</li>
+			                <li class="list-group-item text-right"><span class="pull-left"><strong class="">Neobytes</strong></span> 2012-2013</li>
+			                <li class="list-group-item text-right"><span class="pull-left"><strong class="">Cognizant</strong></span> 2005-2012</li>
+			            </ul>    
+
+			            <div class="panel panel-default">
+			                <div class="panel-heading">Social Media</div>
+			                <div class="panel-body">	<i class="fa fa-facebook fa-2x"></i>  <i class="fa fa-github fa-2x"></i> 
+			                    <i class="fa fa-twitter fa-2x"></i> <i class="fa fa-pinterest fa-2x"></i>  <i class="fa fa-google-plus fa-2x"></i>
+
+			                </div>
+			            </div>
+			          -->
+			          	<div class="panel panel-default">
+			          	<div >Experience</div>
+			          	 <div class="panel-body">
+						   <accordion close-others="true">
+						    <accordion-group  ng-repeat="item in data.experience.slice().reverse() track by $index">
+						    <accordion-heading>
+					            <small> {{item.organization}}</small>
+					        </accordion-heading>
+						    <small class="text-uppercase"> {{item.title}} </small> :  <small> {{item.startdate|date:'MMMM-yyyy'}}  to  {{item.enddate|date:'MMMM-yyyy'}} </small>
+						    </accordion-group>						   
+						  </accordion>
+						 </div> 
+						</div>
+
+						<div class="panel panel-default">
+			          	<div >Certification/Training</div>
+			          	 <div class="panel-body">
+						   <accordion close-others="true">
+						    <accordion-group ng-repeat="item in data.skills.certification.slice().reverse() track by $index">
+						    <accordion-heading>
+					            <small>{{item.certTitle}}</small>
+					        </accordion-heading>
+						    <small>By  {{item.certOrg}} in {{item.certDate|date:'yyyy'}} </small>
+						    </accordion-group>						   
+						  </accordion>
+						 </div> 
+						</div>
+
+			        </div>
+			        <!--/col-3-->
+			        <div class="col-sm-9" contenteditable="false" style="">
+			            <div class="panel panel-default">
+			                <div class="panel-heading">About me</div>
+			                <div class="panel-body"> {{data.personal.aboutme}}
+
+			                </div>
+			            </div>
+			            <div class="panel panel-default">
+			                <div class="panel-heading" contenteditable="false">Education</div>
+			                <div class="panel-body">
+			                  <div class="table-responsive">
+			                  			<table class="table table-striped table-hover">
+			                  					<thead>
+													<tr>														
+														<th>School</th>
+														<th>Degree</th>
+														<th>Start</th>	
+														<th>End</th>															
+														<th>Field of Study</th>															
+														<th>Grade</th>
+														<th>Description</th>														
+													</tr>
+												</thead>
+											
+												<tbody>
+												<tr ng-repeat="item in data.education track by $index">
+														<td>
+															<p >{{item.school}} </p>
+														</td>
+														<td >
+															<p class="lighter line-height-125">
+																	{{item.degree}}
+															</p>
+														</td>														
+														<td>
+															
+															<p class="lighter line-height-125" ng-bind="item.startdate | date:'MM/dd/yyyy'">
+															
+															</p>
+														</td>	
+														<td>
+															
+															<p class="lighter line-height-125" ng-bind="item.enddate | date:'MM/dd/yyyy'">
+															
+															</p>
+														</td>
+														<td>
+															
+																<p class="lighter line-height-125">
+																	{{item.field}}
+																</p>
+															
+														</td>
+														<td>
+															
+																<p class="lighter line-height-125">
+																	{{item.grade}}
+																</p>
+															
+														</td>
+														<td>
+															
+																<p class="lighter line-height-125">
+																	{{item.description}}
+																</p>
+															
+														</td>
+												</tr>
+												</tbody>
+										</table>
+							  </div>
+							</div>  
+			                     
+			           	 </div> <!--education panel -->
+			           	 
+			           	 
+			                 
+			        </div> <!-- 9 row section -->
+			              
+    			</div> <!-- top row -- >
+        
+ 		</div> <!-- top container -->
+ 	</script>
+	<script type="text/ng-template" id="skills.html">
+		<h1> static skills </h1>
+ 	</script>
+ 	<script type="text/ng-template" id="code.html">
+ 		<h1> static code </h1>
+ 	</script>
+ 	<script type="text/ng-template" id="notes.html">
+ 		<h1> static notes </h1>
+ 	</script>
 </body>
 </html>

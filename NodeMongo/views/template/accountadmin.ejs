@@ -43,7 +43,7 @@
 	<% include ../../views/partials/adminscripts %>		
 	<script type="text/javascript">
 	var userid = '<%=id%>';
-	var adminApp =  angular.module('adminApp',['ngRoute','angularModalService','datatables','ngTagsInput','mgcrea.ngStrap']);
+	var adminApp =  angular.module('adminApp',['ngRoute','angularModalService','datatables','ngTagsInput','ui.bootstrap','xeditable']);
 
 	 adminApp.config(['$routeProvider',
                      function($routeProvider) {
@@ -68,6 +68,14 @@
                            templateUrl: function(urlattr){ return "/admin/"+userid+"/personal";},
                            controller: 'settingscontroller'
                          }).
+                          when('/setting/workexperience', {
+                           templateUrl: function(urlattr){ return "/admin/"+userid+"/experience";},
+                           controller: 'workexperiencecontroller'
+                         }).
+	                        when('/setting/skills', {
+	                       templateUrl: function(urlattr){ return "/admin/"+userid+"/skills";},
+	                       controller: 'skillscontroller'
+                         }).
                          when('/action/:name', {
                              templateUrl: function(urlattr){ return urlattr.name;},
                              controller: 'actioncontroller'
@@ -80,30 +88,40 @@
  	adminApp.factory('dataFactory',function($http){
  		var factory = {}; 		
 
- 		factory.getPersonal = function(){
+ 		// factory.getPersonal = function(){
+ 		// 	if(!factory.personal)
+ 		// 	{	
+ 		// 	console.log('contacting server to get the personal details');
+ 		// 	var promise = $http.get('/api/user/'+userid+'/personal'); 			
+			//   	return promise;			 		
+ 		// 	}
+ 		// 	return factory.personal;
+ 		// }
+
+ 		// factory.getContact = function(){
+ 		// 	if(!factory.contact)
+ 		// 	{	
+ 		// 	console.log('contacting server to get the contact details');
+ 		// 	var promise =  $http.get('/api/user/'+userid+'/contact'); 			
+			//   	return promise;			 		
+ 		// 	}
+ 		// 	return factory.contact;
+			
+ 		// }
+
+ 		factory.getData = function(){
  			if(!factory.personal)
  			{	
- 			console.log('contacting server to get the personal details');
- 			var promise = $http.get('/api/user/'+userid+'/personal'); 			
+ 			console.log('contacting server to get the all the data');
+ 			var promise = $http.get('/api/user/'+userid); 			
 			  	return promise;			 		
  			}
- 			return factory.personal;
- 		}
-
- 		factory.getContact = function(){
- 			if(!factory.contact)
- 			{	
- 			console.log('contacting server to get the contact details');
- 			var promise =  $http.get('/api/user/'+userid+'/contact'); 			
-			  	return promise;			 		
- 			}
- 			return factory.contact;
-			
+ 			return factory;
  		}
 
  		factory.saveUser = function(){
 
- 			var user = {personal:factory.personal,contact:factory.contact};
+ 			var user = {personal:factory.data.personal,contact:factory.data.contact};
 			console.log('save user in factory');
 			 console.log(user);
 			 $http({
@@ -124,21 +142,45 @@
 
  		}
 
+ 		factory.saveSkills = function(){
+
+ 			var user = {skills:factory.data.skills};
+			console.log('save user in factory');
+			 console.log(user);
+			 $http({
+    		  url: '../api/skills/'+userid,
+	   		    dataType: "json",
+	   		    method: 'PUT',
+	   		 	data:JSON.stringify(user),
+	   		    headers: {
+	   		        "Content-Type": "application/json"
+	   		    },
+	   		   
+    	  
+			   }).success(function(){
+				  console.log('post successful');				  
+				  
+			  });
+
+
+ 		}
+
 
  		return factory;
 
  	});
 	adminApp.factory('notesFactory',function($http){
-			var factory={};			
+			var factory={"tags":[]};			
 			var notes=false;
-			var notesid = false;
+			var notesid = false;			
 			factory.getNotes = function(){				
 					var promise = $http.get('/api/notes/'+userid);
 					promise.then(function(payload){
 						notes = payload.data.notes;
 						notesid = payload.data._id;
 						factory.notes = notes;
-						factory._id=notesid;	
+						factory._id=notesid;
+						factory.buildTagsDetails();
 					},
 					function(errorPayload)
 					{	
@@ -150,11 +192,72 @@
 				
 			};
 
+
+			factory.buildTagsDetails = function(){
+						for(note in notes)
+						{							
+							addTag(factory.tags,notes[note]);
+						}
+				console.log('tags projection on notes list');
+				//factory.tags.sort(compare);
+				console.log(factory.tags);		
+				return factory.tags;
+			};
+
 			return factory;
 		});	
 
+	function compare(tag1,tag2)
+	{
+		 if (tag1.notes.length < tag2.notes.length)
+		     return -1;
+		  if (tag1.notes.length > tag2.notes.length)
+		    return 1;
+		  return 0;
+	}
+
+	function addTag(tagsbag,note)
+	{
+		// if(tagsbag.length === 0)
+		// {
+		// 	// empty intialize
+		// 	console.log('empty tagsbag '+note);
+		// 	for(tag in note.tags)
+		// 	{
+		// 		console.log(note.tags[tag]);
+		// 		var temp = {"text":note.tags[tag].text,notes:[]};
+		// 		temp.notes.push(note);
+		// 		tagsbag.push(temp);
+		// 	}	
+		// 	console.log('tags bag when length is 0');
+		// 	console.log(tagsbag);
+
+		// }
+		// else{
+			console.log('already has some tags');
+				for(_ntIndex in note.tags)
+				{
+					var isTagfound = false;	
+					for(tagIndex in tagsbag)
+					{
+						if(tagsbag[tagIndex].text === note.tags[_ntIndex].text)
+						{
+							isTagfound = true;
+							tagsbag[tagIndex].notes.push(note);
+						}
+					}
+					if(!isTagfound)
+					{
+						var temp = {"text":note.tags[_ntIndex].text,notes:[]};
+						temp.notes.push(note);
+						tagsbag.push(temp);
+					}
+				}
+		// }
+	}
+
 	adminApp.factory('educationFactory',function($http,$q){
-			var factory={};			
+			var factory={education:[]};			
 			var edupromise = false;			
 			factory.getEducation = function(){	
 					if(!edupromise)
@@ -162,7 +265,8 @@
 						edupromise = $http.get('/api/education/'+userid).success(function(data)
 						{
 							console.log('education data :: ' + data.education);
-							factory.education = data.education;
+							// if(data.education)
+							// 	factory.education = data.education;
 						})
 						.error(function()
 							{
@@ -177,11 +281,18 @@
 			};
 
 			factory.addEducation = function(item){
+				console.log('add education');
+				console.log(item);
+				var isfirstitem = false;
 				if(factory.education) // education should have been loaded before this action 
 				{
-					item.eid = factory.education.length+1;
-					factory.education.push(item);
+					isfirstitem = true;
 				}
+
+				item.eid = factory.education.length+1;
+				factory.education.push(item);
+				
+				console.log(factory.education);
 
 			};
 
@@ -211,7 +322,7 @@
 				console.log('data to be put in server ');
 				console.log(data);
 					$http({
-			    		  url: '../api/education',
+			    		  url: '../api/education/'+userid,
 				   		    dataType: "json",
 				   		    method: 'PUT',
 				   		 	data:JSON.stringify(factory),
@@ -231,18 +342,188 @@
 
 			return factory;
 		});	
+
+adminApp.factory('experienceFactory',function($http,$q){
+			var factory={experience:[]};			
+			var exppromise = false;			
+			factory.getExperience = function(){	
+					if(!exppromise)
+					{			
+						exppromise = $http.get('/api/experience/'+userid).success(function(data)
+						{
+							console.log('education data :: ' + data.experience);
+							// if(data.education)
+							// 	factory.education = data.education;
+						})
+						.error(function()
+							{
+								exppromise= false;
+								
+							});
+						
+						
+					}
+					return exppromise;
+				
+			};
+
+			factory.addExperience = function(item){
+				console.log('add experience');
+				console.log(item);
+				var isfirstitem = false;
+				var index = 1;
+				if(factory.experience) // education should have been loaded before this action 
+				{
+					index = factory.experience.length+1;
+				}					
+				item.wid = index; 
+				//console.log(factory.experience);
+				factory.experience.push(item);
+				//console.log(factory.experience);
+				
+				
+
+			};
+
+			factory.deleteExperience = function(itemno){
+				if(factory.experience)// education should have been loaded before this action 
+				{
+					var index = getindexofitem(factory.experience,'wid',itemno);					
+					factory.experience.splice(index,1);					
+				}
+
+			};
+
+			factory.getExperienceById = function(itemno){
+				if(factory.experience)// education should have been loaded before this action 
+				{
+					var index = getindexofitem(factory.experience,'wid',itemno);					
+					return factory.experience[index];					
+				}
+				else
+					return false;
+
+			};
+
+			factory.saveExperience = function(){	
+				
+				var data = {_id:userid,experience:factory.experience};
+				console.log('data to be put in server ');
+				console.log(data);
+					$http({
+			    		  url: '../api/experience/'+userid,
+				   		    dataType: "json",
+				   		    method: 'PUT',
+				   		 	data:JSON.stringify(factory),
+				   		 	appendElement:experienceref,
+				   		    headers: {
+				   		        "Content-Type": "application/json"
+				   		    },
+				   		   
+			    	  
+						   }).success(function(){
+							  console.log('post successful');				  
+							  
+						  });
+							
+			};
+
+
+			return factory;
+		});	
+
+adminApp.factory('overviewFactory',function($http,$q){
+			var factory={accessDetails:[],groupsLength:0,groups:[],totalview:0,activePercent:0,comments:[]};			
+			// var exppromise = false;			
+			// factory.getExperience = function(){	
+			// 		if(!exppromise)
+			// 		{			
+			// 			exppromise = $http.get('/api/experience/'+userid).success(function(data)
+			// 			{
+			// 				console.log('education data :: ' + data.experience);
+			// 				// if(data.education)
+			// 				// 	factory.education = data.education;
+			// 			})
+			// 			.error(function()
+			// 				{
+			// 					exppromise= false;
+								
+			// 				});
+						
+						
+			// 		}
+			// 		return exppromise;
+				
+			// };
+
+	/*		
 	
+	var _private = {	"_id" : "54ed19b73e92d97af79191d4","groupname" : "Private","uid" : "54ed1ff1c5c25fc8041648ff","hits" : {	"total" : "31","daily" : [{	"date" : "2015-03-15","count" : "5"	},{"date" : "2015-03-25","count" : "54"},{"date" : "2015-03-26","count" : "45"}]},"isactive" : true};
+
+	var _personal = {	"_id" : "54ed19b73e92d97af79191d5","groupname" : "Personal","uid" : "54ed1ff1c5c25fc8041648ff","hits" : {	"total" : "121","daily" : [{	"date" : "2015-03-15","count" : "5"	},{"date" : "2015-03-25","count" : "54"},{"date" : "2015-03-26","count" : "45"}]},"isactive" : true,"accessrequest" : {"total":"10","comments":[{"name" : "Ramasubramani","comment" : "Just to view"}]}};
+
+	var _oldcompany = {	"_id" : "54ed19b73e92d97af79191d6","groupname" : "Coggroups","uid" : "54ed1ff1c5c25fc8041648ff","hits" : {	"total" : "43","daily" : [{	"date" : "2015-03-15","count" : "5"	},{"date" : "2015-03-25","count" : "54"},{"date" : "2015-03-26","count" : "45"}]},"isactive" : false,"accessrequest" : {"total":"2","comments":[{"name" : "Karpaga","comment" : "Ok not so good"}]}};
+
+
+
+	factory.accessDetails.push(_private);
+	factory.accessDetails.push(_personal);
+	factory.accessDetails.push(_oldcompany);
+*/
+	factory.buildViewDetails = function(){
+		
+			factory.groupsLength =  factory.accessDetails.length;
+			var total = 0;
+			var inactive = 0;
+			for(var i =0 ; i<factory.groupsLength;i++)
+			{
+				var item = factory.accessDetails[i];
+				total = total + parseInt(item.hits.total);
+				factory.groups.push(item.groupname);
+				if(!item.isactive)
+					inactive = inactive+1;
+
+			}
+			factory.totalview = total;
+			console.log('total :: '+total );
+			console.log('active :: '+ (factory.accessDetails.length-inactive) );
+			if(factory.accessDetails.length > 0)
+			{
+				var activeGroupPercent = Math.floor(((factory.accessDetails.length-inactive) / factory.accessDetails.length) * 100);
+				factory.activePercent = activeGroupPercent;
+			}
+		
+
+		if(factory.comments.length === 0)
+		{
+			for(var index in factory.accessDetails)
+			{
+				var item = factory.accessDetails[index];
+				if(item.accessrequest)
+				{
+					for(commentIndex in item.accessrequest.comments)
+						factory.comments.push(item.accessrequest.comments[commentIndex]);
+				}
+			}
+		}
+	};
+
+	return factory;
+
+
+});
 	
 	adminApp.controller('navcontroller',['$scope', '$http', '$location','dataFactory',function($scope,$http,$location,dataFactory){			
-			 $scope.loadNav = function () {					
-					var personalpromise  = dataFactory.getPersonal();
+			 $scope.loadNav = function () {		
+			 var promise  = dataFactory.getData();
 					
-					if(personalpromise)	
+					if(promise)	
 					{	
-						personalpromise.then(function(payload){
-	 							console.log('got the personal details from server');
-								dataFactory.personal = payload.data.personal;
-								$scope.personal = dataFactory.personal;
+						promise.then(function(payload){
+	 							console.log('got the  details from server');
+								dataFactory.data = payload.data;
+								$scope.personal = dataFactory.data.personal;
+								$scope.contact = dataFactory.data.contact;
 							},
 							function(errorPayload)
 							{	
@@ -251,21 +532,38 @@
 							});
 				    }	
 
-				    var contactpromise  = dataFactory.getContact();
+
+					// var personalpromise  = dataFactory.getPersonal();
 					
-					if(contactpromise)	
-					{	
-						contactpromise.then(function(payload){
-	 							console.log('got the contact details from server');
-								dataFactory.contact = payload.data.contact;
-								$scope.contact = dataFactory.contact;
-							},
-							function(errorPayload)
-							{	
-								console.log('error ' +errorPayload);
+					// if(personalpromise)	
+					// {	
+					// 	personalpromise.then(function(payload){
+	 			// 				console.log('got the personal details from server');
+					// 			dataFactory.personal = payload.data.personal;
+					// 			$scope.personal = dataFactory.personal;
+					// 		},
+					// 		function(errorPayload)
+					// 		{	
+					// 			console.log('error ' +errorPayload);
 								
-							});
-				    }	
+					// 		});
+				 //    }	
+
+				 //    var contactpromise  = dataFactory.getContact();
+					
+					// if(contactpromise)	
+					// {	
+					// 	contactpromise.then(function(payload){
+	 			// 				console.log('got the contact details from server');
+					// 			dataFactory.contact = payload.data.contact;
+					// 			$scope.contact = dataFactory.contact;
+					// 		},
+					// 		function(errorPayload)
+					// 		{	
+					// 			console.log('error ' +errorPayload);
+								
+					// 		});
+				 //    }	
 			};
 			$scope.loadNav();
  		}]);
@@ -277,9 +575,11 @@
 								  {'li':{'class':'','aclass':'dropdown-toggle','iconclass':'menu-icon fa fa-cog','label':'Edit Account','description':'Edit account'},
 								   'submenu':{'ulclass':'submenu','listitems':
 												[
-												 {'class':'','href':'#/setting/personal','iconclass':'menu-icon fa fa-caret-right','label':'Personal details','description':''},
-												 {'class':'','href':'#/setting/education','iconclass':'menu-icon fa fa-caret-right','label':'Education details','description':''},
-												 {'class':'','href':'#/setting/social','iconclass':'menu-icon fa fa-caret-right','label':'Social settings','description':''}
+												 {'class':'','href':'#/setting/personal','iconclass':'menu-icon fa fa-caret-right','label':'Personal','description':''},
+												 {'class':'','href':'#/setting/education','iconclass':'menu-icon fa fa-caret-right','label':'Education','description':''},
+												 {'class':'','href':'#/setting/workexperience','iconclass':'menu-icon fa fa-caret-right','label':'Experience','description':''},
+												 {'class':'','href':'#/setting/skills','iconclass':'menu-icon fa fa-caret-right','label':'Skills','description':''},
+												 {'class':'','href':'#/setting/social','iconclass':'menu-icon fa fa-caret-right','label':'Git','description':''}
 												 ]
 											}
 								   },
@@ -291,8 +591,51 @@
 		
 		});
 		
-		adminApp.controller('overviewcontroller',['$scope', '$http', '$location',function($scope,$http,$location){
+		adminApp.controller('overviewcontroller',['$scope', '$http', '$location','overviewFactory','notesFactory','dataFactory',function($scope,$http,$location,overviewFactory,notesFactory,dataFactory){
 			console.log('overview controller invoked');
+			overviewFactory.buildViewDetails();
+			notesFactory.buildTagsDetails();
+			$scope.data = overviewFactory;
+			$scope.tags = notesFactory.tags.sort(compare);
+			
+
+			var localnotes = false;
+			if(!notesFactory.notes)
+			{
+				var promise = notesFactory.getNotes();			
+				promise.then(function(payload){
+					localnotes = payload.data.notes;				
+					console.log('Loading notes from server');
+					console.log(localnotes);		 	
+				},
+				function(errorPayload)
+				{	
+					console.log(errorPayload);
+				});
+
+			}
+			else
+			{
+				localnotes = notesFactory.notes;
+				console.log('notes loaded already');
+				console.log(localnotes);
+			}
+
+			$http.get('/api/code/'+userid).success(function(data)
+			{
+				console.log(data);
+				
+				if(data.repos)
+				{
+					$scope.repos = data.repos;
+					$scope.repocount = data.repos.length;
+				}	
+				console.log($scope.count);
+			}).error(function(error)
+			{
+				console.log(error);
+			});
+
 			
 		}]);
 
@@ -301,6 +644,7 @@
 			educationFactory.getEducation().then(function(payload)
 				{					
 					$scope.education = payload.data.education;
+					educationFactory.education = $scope.education;
 				});
 			
 			$scope.edit = function(id)
@@ -312,7 +656,7 @@
 				ModalService.showModal({
 								templateUrl: 'educationmodal.html',
 								controller: "editeducontroller",
-								inputs:{item:edu}
+								inputs:{item:edu,parentScope:$scope.education}
 							}).then(function(modal) {
 								modal.element.modal();
 								modal.close.then(function(result) {
@@ -328,7 +672,7 @@
 				ModalService.showModal({
 								templateUrl: 'educationmodal.html',
 								controller: "editeducontroller",
-								inputs:{item:null}
+								inputs:{item:null,parentScope:$scope.education}
 							}).then(function(modal) {
 								modal.element.modal();
 								modal.close.then(function(result) {
@@ -342,6 +686,74 @@
 			$scope.delete = function(id)
 			{
 				educationFactory.deleteEducation(id);
+			}
+
+			$scope.save = function()
+			{
+				educationFactory.saveEducation();
+			}
+			
+		}]);
+
+
+
+	adminApp.controller('workexperiencecontroller',['$scope', '$http', '$location','ModalService','experienceFactory',function($scope,$http,$location,ModalService,experienceFactory){
+			console.log('work experience controller invoked');
+			experienceFactory.getExperience().then(function(payload)
+				{			
+					if(payload.data.experience)		
+					{						
+						experienceFactory.experience = payload.data.experience;
+					}	
+					
+						$scope.experience = experienceFactory.experience;
+					
+				});
+			
+			$scope.edit = function(id)
+			{				
+				
+				var exp = experienceFactory.getExperienceById(id);
+				console.log(exp);
+				$scope.item=exp;
+				ModalService.showModal({
+								templateUrl: 'experiencemodal.html',
+								controller: "editexpcontroller",
+								inputs:{item:exp,parentScope:$scope.experience}
+							}).then(function(modal) {
+								modal.element.modal();
+								modal.close.then(function(result) {
+									$scope.message = "You clicked " + result;
+									console.log(result);
+									});
+						});
+				
+			}
+
+			$scope.add = function()
+			{	
+				ModalService.showModal({
+								templateUrl: 'experiencemodal.html',
+								controller: "editexpcontroller",
+								inputs:{item:null,parentScope:$scope.experience}
+							}).then(function(modal) {
+								modal.element.modal();
+								modal.close.then(function(result) {
+									$scope.message = "You clicked " + result;
+									console.log(result);
+									});
+						});
+				
+			}
+
+			$scope.delete = function(id)
+			{
+				experienceFactory.deleteExperience(id);
+			}
+
+			$scope.save = function()
+			{
+				experienceFactory.saveExperience();
 			}
 			
 		}]);
@@ -406,6 +818,20 @@
 			    }
 			}
 			return false;
+		}
+
+		function getmaxIndex(items,idname)
+		{
+			var maxindex = 0;
+			for(var i in items) {			   
+				
+				var item = items[i];
+				if(item[idname] > maxindex) {
+			        maxindex = item[idname];
+			    }
+			    console.log('maxindex :: ' + maxindex);
+			}
+			return maxindex;
 		}
 
 		adminApp.controller('coderefcontroller',['$scope', '$http', '$location','$parse','notesFactory','ModalService',function($scope,$http,$location,$parse,notesFactory,ModalService){
@@ -523,7 +949,7 @@
 	  
 		}]);
 
-		adminApp.controller('editeducontroller',function($scope,$http,$location,$sce,educationFactory,item){
+		adminApp.controller('editeducontroller',function($scope,$http,$location,$sce,educationFactory,item,parentScope){
 			console.log('Edit edu '+item);
 			if(item)
 				$scope.title = 'Edit Education';
@@ -535,8 +961,9 @@
 			{
 				if(!eid) // edit will by default add the items.
 				{
-					console.log('saving new education');
+					console.log('saving new education '+$scope.item);
 					educationFactory.addEducation($scope.item);
+					parentScope = educationFactory.getEducation();
 				}
 			}	
 
@@ -544,6 +971,26 @@
 			// $scope.selectedDateAsNumber = 508636800000; // <- [object Number]
 			// $scope.fromDate = "2015-03-13T07:00:00.000Z"; // <- [object Date]
 			// $scope.untilDate = "2015-03-13T07:00:00.000Z"; // <- [object Date]
+		});
+
+		adminApp.controller('editexpcontroller',function($scope,$http,$location,$sce,experienceFactory,item,parentScope){
+			console.log('Edit edu '+item);
+			if(item)
+				$scope.title = 'Edit Experience';
+			else
+				$scope.title = 'Add Experience';
+			$scope.item = item;
+			$scope.currentdate = Date();
+			$scope.save = function(wid)
+			{
+				if(!wid) // edit will by default add the items.
+				{
+					console.log('saving new experience '+$scope.item);
+					experienceFactory.addExperience($scope.item);					
+					parentScope = experienceFactory.experience;
+				}
+			}	
+
 		});
 
 		adminApp.controller('editnotecontroller',function($scope,$http,$location,$sce,notesFactory,note){
@@ -594,13 +1041,13 @@
 						}
 						]
 			}
-			
-		 
-			$scope.personal = dataFactory.personal;
-			$scope.contact = dataFactory.contact;
+			console.log(" checking datafactory in the settings controller");
+		 	console.log(dataFactory.data);
+			$scope.personal = dataFactory.data.personal;
+			$scope.contact = dataFactory.data.contact;
 			$scope.saveUser = function() {
-				dataFactory.personal = $scope.personal;
-				dataFactory.contact = $scope.contact;
+				dataFactory.data.personal = $scope.personal;
+				dataFactory.data.contact = $scope.contact;
 				dataFactory.saveUser(); 
 				$location.path("/info/overview");
 			};	
@@ -713,6 +1160,103 @@
 									});
 							});
 				};			
+		}]);
+
+		adminApp.controller('skillscontroller',['$scope', '$http', '$location','dataFactory',function($scope,$http,$location,dataFactory){
+			console.log('skills controller invoked');
+			console.log(dataFactory);
+			if(!dataFactory.data.skills)
+					dataFactory.data.skills={"certification":[],"training":[],"technology":[]};
+			$scope.certifications = dataFactory.data.skills.certification;
+			$scope.trainings = dataFactory.data.skills.training;
+			$scope.technology = dataFactory.data.skills.technology;
+			$scope.currentdate = Date();
+
+			$scope.newCert = {"certid":"","certTitle":"","certOrg":"","certDate":""};			
+			$scope.addCert = function()
+			{
+				
+				if(!dataFactory.data.skills.certification)
+					dataFactory.data.skills.certification = [];
+				if(!($scope.newCert.certTitle === '' &&  $scope.newCert.certOrg ===''))
+				{	
+					$scope.newCert.certid = 1+ getmaxIndex(dataFactory.data.skills.certification,"certid");
+					console.log('Adding ');
+					console.log($scope.newCert);
+					dataFactory.data.skills.certification.push($scope.newCert);
+				}
+				{
+					console.log('rouge :: dont click add button');
+				}
+				$scope.newCert = {"certTitle":"","certOrg":"","certDate":""};
+			}
+			$scope.delCert = function(certIndex)
+			{
+				var index = getindexofitem(dataFactory.data.skills.certification,"certid",certIndex);
+				console.log('deleting  ');
+				console.log(dataFactory.data.skills.certification[index]);
+				dataFactory.data.skills.certification.splice(index,1);
+				
+			}
+
+			$scope.newtraining = {"tid":"","trainingTitle":"","trainingOrg":"","trainingDesc":"","trainingDate":""};			
+			$scope.addTraining = function()
+			{
+				
+				if(!dataFactory.data.skills.training)
+					dataFactory.data.skills.training = [];
+				if(!($scope.newtraining.trainingTitle === '' &&  $scope.newtraining.trainingOrg ===''))
+				{	
+					$scope.newtraining.tid = 1+ getmaxIndex(dataFactory.data.skills.training,"tid");
+					
+					dataFactory.data.skills.training.push($scope.newtraining);
+				}
+				{
+					console.log('rouge :: dont click add button');
+				}
+				$scope.newtraining = {"tid":"","trainingTitle":"","trainingOrg":"",trainingDesc:"","trainingDate":""};
+			}
+			$scope.delTraining = function(tIndex)
+			{
+				var index = getindexofitem(dataFactory.data.skills.training,"tid",tIndex);
+				console.log('deleting  ');
+				console.log(dataFactory.data.skills.training[index]);
+				dataFactory.data.skills.training.splice(index,1);
+				
+			}
+
+			$scope.newTechnology = {"techid":"","category":"","techskills":[],"project":"","description":""};			
+			$scope.addTech = function()
+			{
+				
+				if(!dataFactory.data.skills.technology)
+					dataFactory.data.skills.technology = [];
+				if(!($scope.newTechnology.category === '' ))
+				{	
+					$scope.newTechnology.techid = 1+ getmaxIndex(dataFactory.data.skills.technology,"techid");
+					
+					dataFactory.data.skills.technology.push($scope.newTechnology);
+					console.log(dataFactory.data.skills.technology);
+				}
+				{
+					console.log('rouge :: dont click add button');
+				}
+				$scope.newTechnology =  {"techid":"","category":"","techskills":[]};		
+			}
+			$scope.delTech = function(techIndex)
+			{
+				var index = getindexofitem(dataFactory.data.skills.technology,"techid",techIndex);
+				console.log('deleting  ');
+				console.log(dataFactory.data.skills.technology[index]);
+				dataFactory.data.skills.technology.splice(index,1);
+				
+			}
+			
+			$scope.saveSkills = function()
+			{
+				dataFactory.saveSkills();
+			}
+				
 		}]);
 		
 		adminApp.directive('isActiveNav', [ '$location', function($location) {

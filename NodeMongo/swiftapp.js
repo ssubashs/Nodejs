@@ -21,11 +21,15 @@ var userdb = require("./model/userread");
 //   this will be as simple as storing the user ID when serializing, and finding
 //   the user by ID when deserializing.
 passport.serializeUser(function(user, done) {
+  console.log('serialize user');
+  console.log(user);
   done(null, user._id);
 });
 
 passport.deserializeUser(function(id, done) {
-  userdb.findById(id, function (err, user) {
+  console.log('deserialize user for is '+id);
+  userdb.findAccessById(id, function (err, user) {    
+    console.log(user);
     done(err, user);
   });
 });
@@ -45,10 +49,12 @@ passport.use(new LocalStrategy(
       // username, or the password is not correct, set the user to `false` to
       // indicate failure and set a flash message.  Otherwise, return the
       // authenticated `user`.
-        userdb.findByUsername(username, function(err, user) {
+        userdb.findAccessByUsername(username, function(err, user) {
+        console.log('find access by uname') ;
+        console.log(user);
         if (err) { return done(err); }
         if (!user) { return done(null, false, { message: 'Unknown user ' + username }); }
-        if (user.personal.password != password) { return done(null, false, { message: 'Invalid password' }); }
+        if (user.password != password) { return done(null, false, { message: 'Invalid password' }); }
         return done(null, user);
       })
     });
@@ -117,7 +123,7 @@ var user = req.user;
         }
         else
         	{
-        		res.redirect('/admin/'+req.user._id+'#/setting/personal');
+        		res.redirect('/admin/'+req.user.uid+'#/setting/personal');
         	}
  });
 	
@@ -134,7 +140,7 @@ var user = req.user;
 app.post('/login', 
   passport.authenticate('local', { failureRedirect: '/login', failureFlash: true }),
   function(req, res) {
-    res.redirect('/admin/'+req.user._id);
+    res.redirect('/admin/'+req.user.uid);
   });
   
 // POST /login

@@ -1,4 +1,4 @@
-
+	
 <!-- ajax layout which only needs content area -->
 <div class="row">
 	<div class="col-xs-12">
@@ -10,17 +10,17 @@
 					<div class="widget-header widget-header-large">
 						<h3 class="widget-title grey lighter">
 							<i class="ace-icon fa fa-leaf green"></i>
-							Subash Soundrapandi
+							{{personal.firstname}} {{personal.lastname}}
 						</h3>
 
 						<!-- #section:pages/invoice.info -->
 						<div class="widget-toolbar no-border invoice-info">
 							<span class="invoice-info-label">username:</span>
-							<span class="red">@ssubashs</span>
+							<span class="red">@{{personal.username}}</span>
 
 							<br />
 							<span class="invoice-info-label">Joined:</span>
-							<span class="blue">04/04/2014</span>
+							<span class="blue">{{personal.createdon |  date:'MM/dd/yyyy'}}</span>
 						</div>
 
 						<div class="widget-toolbar hidden-480">
@@ -186,6 +186,23 @@
 															<span class="input-icon input-icon-right">
 																<input class="input-medium input-mask-phone" type="text" id="form-field-phone" ng-model="contact.phone"  />
 																<i class="ace-icon fa fa-phone fa-flip-horizontal"></i>
+															</span>
+														</div>
+													</div>
+
+													<div class="space-4"></div>
+
+													<div class="form-group">
+														<label class="col-sm-3 control-label no-padding-right" for="form-field-location">Location</label>
+
+														<div class="col-sm-9">
+															<span class="input-icon input-icon-right">
+																<input class="input-medium " type="text" id="form-field-location" placeholder="City" ng-model="contact.city"  />																
+															</span>
+															,
+															<span class="input-icon input-icon-right">
+																<input class="input-medium " type="text" id="form-field-location" placeholder ="State" ng-model="contact.state"  />
+																<i class="ace-icon fa fa-compass fa-flip-horizontal"></i>
 															</span>
 														</div>
 													</div>

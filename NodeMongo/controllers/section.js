@@ -9,47 +9,32 @@ module.exports.controller = function(app) {
  * a home page route
  */
   app.get('/profile/:id/section/code', function(req, res) {    
-	  var _id = req.params.id;
-	  userdb.getPersonalDetails(_id,function(details)
-			  {
-		  		res.render('template/codesection',{'code':details});
-			  });
+	var _id = req.params.id;	  
+	res.render('template/codesection',{'userid':_id});	
   });
   
   app.get('/profile/:id/section/contact', function(req, res) {     
-	  var _id = req.params.id;
-	  userdb.getPersonalDetails(_id,function(details)
-			  {
-		  		res.render('template/contactsection',{'contact':details});
-			  });
+	var _id = req.params.id;	 
+	res.render('template/contactsection',{'userid':_id});
+	
   });
   
   app.get('/profile/:id/section/notes', function(req, res) {
-	  var _id = req.params.id;
-	  userdb.getPersonalDetails(_id,function(details)
-			  {
-		  	    res.render('template/notesection',{'notes':details});
-			  });
+	var _id = req.params.id;
+	res.render('template/notesection',{'userid':_id});
+	
   });
   
   app.get('/profile/:id/section/skill', function(req, res) {
-	  var _id = req.params.id;
-	  userdb.getPersonalDetails(_id,function(details)
-			  {
-		  		res.render('template/skillsection',{'skill':details});
-			  });
+	var _id = req.params.id;
+	res.render('template/skillsection',{'userid':_id});
 		  		
   });
 
   app.get('/profile/:id/section/home', function(req, res) {
-	  var _id = req.params.id;
-	  userdb.getPersonalDetails(_id,function(details)
-			  {
-		  		console.log("profile details ");
-		  		console.log(details);
-		  		res.render('template/profilesection',{'profile':details});
-			  });
-      
+	var _id = req.params.id;
+	res.render('template/profilesection',{'userid':_id});
+	  
   });
 
 

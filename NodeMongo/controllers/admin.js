@@ -66,6 +66,24 @@ module.exports.controller = function(app) {
 //        });
           
   });
+
+  app.get('/admin/:id/experience',ensureAuthenticated,function(req, res) {
+    var _id = req.params.id;
+//    userread.getPersonalDetails(_id,function(details)
+//        {
+          res.render('template/experience',{'id':_id});
+//        });
+          
+  });
+
+   app.get('/admin/:id/skills',ensureAuthenticated,function(req, res) {
+    var _id = req.params.id;
+//    userread.getPersonalDetails(_id,function(details)
+//        {
+          res.render('template/skills',{'id':_id});
+//        });
+          
+  });
 };
 
 
